@@ -1,4 +1,5 @@
 [user]
+	name = Lenz Gschwendtner
 	email = lenz@springtimesoft.com
 [color]
     ui = auto
@@ -19,6 +20,7 @@
     untracked = cyan
 [core]
     whitespace=fix,-indent-with-non-tab,trailing-space,cr-at-eol
+    excludesfile = /opt/boxen/config/git/gitignore
 [http]
     sslVerify = false
 [alias]
@@ -31,7 +33,14 @@
     lol = log --graph --decorate --pretty=oneline --abbrev-commit
     lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
     ls = ls-files
+[push]
+	default = simple
 [branch]
 	autosetupmerge = true
 [github]
 	user = norbu09
+[hub]
+    protocol = https
+[credential]
+    helper = /opt/boxen/bin/boxen-git-credential
+

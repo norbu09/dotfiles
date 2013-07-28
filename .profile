@@ -1,6 +1,6 @@
 # $FreeBSD: src/etc/root/dot.profile,v 1.20 1999/08/27 23:24:09 peter Exp $
 #
-PATH=/sbin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/X11R6/bin:${HOME}/bin:/usr/local/pgsql/bin:/opt/local/bin:/opt/local/sbin:/usr/local/share/npm/bin:/usr/texbin:~/.cabal/bin:/usr/local/share/python:/Applications/VMware\ Fusion.app/Contents/Library
+PATH=/bin:/sbin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:${HOME}/bin:$HOME/.rvm/bin
 export PATH
 TERM=${TERM:-cons25}
 export TERM
@@ -11,8 +11,8 @@ export MORE
 BLOCKSIZE=M
 export BLOCKSIZE
 
-ENV=$HOME/.bashrc
-export ENV
+#ENV=$HOME/.bashrc
+#export ENV
 
 EDITOR=vim
 export EDITOR
@@ -27,17 +27,6 @@ alias mtr='mtr --curses'
 
 HISTIGNORE='&:l: *'; export HISTIGNORE
 
-if [ -d "/Library/Java/JavaVirtualMachines/1.6.0_32-b05-420.jdk" ]; then
-    export JAVA_HOME="/Library/Java/JavaVirtualMachines/1.6.0_32-b05-420.jdk/Contents/Home/"
-fi
-if [ -d "$HOME/.ec2" ]; then
-    export EC2_PRIVATE_KEY="$(/bin/ls $HOME/.ec2/pk-*.pem)"
-    export EC2_CERT="$(/bin/ls $HOME/.ec2/cert-*.pem)"
-    export EC2_HOME="/usr/local/Cellar/ec2-api-tools/1.3-57419/jars"
-fi
-
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"  # This loads RVM into a shell session.
-
 if [ -f `which brew` ]; then
     if [ -f `brew --prefix git`/etc/bash_completion.d/git-completion.bash ]; then
         source `brew --prefix git`/etc/bash_completion.d/git-completion.bash
@@ -50,6 +39,18 @@ fi
 
 if [ -d "$HOME/perl5/perlbrew" ]; then
     source ~/perl5/perlbrew/etc/bashrc
+fi
+
+if [ -f /opt/boxen/env.sh ]; then
+    source /opt/boxen/env.sh
+fi
+
+if [ -d "/Library/Java/JavaVirtualMachines/1.6.0_45-b06-451.jdk" ]; then
+    export JAVA_HOME="/Library/Java/JavaVirtualMachines/1.6.0_45-b06-451.jdk/Contents/Home/"
+fi
+
+if [ -d /opt/boxen/homebrew/opt/android-sdk ]; then
+    export ANDROID_HOME=/opt/boxen/homebrew/opt/android-sdk
 fi
 
 GIT_PS1=`__git_ps1 2>/dev/null`

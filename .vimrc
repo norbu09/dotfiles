@@ -50,7 +50,7 @@ set   nowrap
 set   writebackup
 set   foldmethod=marker
 
-set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [POS=%04l,%04v][%p%%]\ [%{GitBranchInfoString()}]
+set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [POS=%04l,%04v][%p%%]
 set laststatus=2 
 
 set exrc
