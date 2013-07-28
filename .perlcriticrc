@@ -1,0 +1,10 @@
+severity = 4
+
+[TestingAndDebugging::RequireUseStrict]
+equivalent_modules = Mouse Any::Moose Mouse::Role 5.010 Test::More
+
+[TestingAndDebugging::RequireUseWarnings]
+equivalent_modules = Mouse Any::Moose Mouse::Role 5.010 Test::More
+
+[Modules::RequireEndWithOne]
+severity = 1

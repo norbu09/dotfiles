@@ -1,0 +1,52 @@
+# Sample minimal config file.  Copy this to ~/.offlineimaprc and edit to
+# suit to get started fast.
+
+[general]
+metadata = ~/.offlineimap
+accounts = NORBU09
+maxsyncaccounts = 2
+# max number of concurrent connections
+ui = blinkenlights
+
+#### GMAIL Account Settings ####
+#[Account GMAIL]
+#localrepository = LocalGmail
+#remoterepository = RemoteGmail
+#autorefresh = 10
+# minutes until next sync
+#quick = 5
+# number of 'quick' syncs between full syncs, saves time
+
+#[Repository LocalGmail]
+#type = Maildir     # format of the local repository. choose Maildir if you will use Mutt
+#localfolders = ~/.maildb/GMAIL  # location of the email
+#restoreatime = no   # don't let offlineimap touch the atime of files
+
+#[Repository RemoteGmail]
+#type = IMAP
+#remotehost = imap.gmail.com
+#remoteuser = greg.grossmeier@gmail.com
+#remotepass = yep
+#ssl = yes
+
+#### NORBU09 Account Settings ####
+[Account NORBU09]
+localrepository = LocalNorbu09
+remoterepository = RemoteNorbu09
+autorefresh = 10
+quick = 5
+
+[Repository LocalNorbu09]
+type = Maildir
+localfolders = ~/.mail/NORBU09
+restoreatime = no
+
+[Repository RemoteNorbu09]
+type = IMAP
+remoteuser = lenz
+remotehost = mail.norbu09.org
+remotepass = yep
+ssl = yes
+cert_fingerprint = 7b5510d30c75ba5d57793cf642348651347439c6
+folderfilter = lambda foldername: not re.search('(^users\.|Server-Mails|INBOX.Deleted)', foldername)
+folderfilter = lambda folder: folder.startswith('INBOX')

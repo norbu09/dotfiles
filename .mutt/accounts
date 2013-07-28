@@ -1,0 +1,14 @@
+## accounts 
+#set imap_user = "norbu09@googlemail.com"
+#set imap_pass = "blubb"
+#set imap_user = "lenz@ideegeo.com"
+#set imap_pass = "blubb"
+
+#set folder = "imaps://mail.office.ideegeo.com:993"
+#set spoolfile = "+INBOX"
+#set postponed="+[Gmail]/Drafts"
+#set imap_check_subscribed
+
+set mbox_type = "Maildir"
+set folder = "~/.mail"
+set spoolfile=+NORBU09/INBOX
