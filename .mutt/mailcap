@@ -1,0 +1,12 @@
+# Images
+image/*; $HOME/.mutt/view_attachment %s
+
+# PDFs
+application/pdf; $HOME/.mutt/view_attachment %s
+
+# HTML
+text/html; $HOME/.mutt/view_attachment %s html
+text/html; w3m -I %{charset} -T text/html; copiousoutput;
+
+text/*; vim %s
+

@@ -35,22 +35,18 @@ if [ -f `which brew` ]; then
     if [ -f `brew --prefix`/etc/bash_completion ]; then
         source `brew --prefix`/etc/bash_completion
     fi
+
+    if [ -d `brew --prefix`/opt/android-sdk ]; then
+        export ANDROID_HOME=`brew --prefix`/opt/android-sdk
+    fi
 fi
 
 if [ -d "$HOME/perl5/perlbrew" ]; then
     source ~/perl5/perlbrew/etc/bashrc
 fi
 
-if [ -f /opt/boxen/env.sh ]; then
-    source /opt/boxen/env.sh
-fi
-
 if [ -d "/Library/Java/JavaVirtualMachines/1.6.0_45-b06-451.jdk" ]; then
     export JAVA_HOME="/Library/Java/JavaVirtualMachines/1.6.0_45-b06-451.jdk/Contents/Home/"
-fi
-
-if [ -d /opt/boxen/homebrew/opt/android-sdk ]; then
-    export ANDROID_HOME=/opt/boxen/homebrew/opt/android-sdk
 fi
 
 GIT_PS1=`__git_ps1 2>/dev/null`

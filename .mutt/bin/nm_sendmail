@@ -1,0 +1,2 @@
+#!/bin/bash
+tee >(notmuch-deliver -t sent -f Sent) | sendmail -oem -oi $*

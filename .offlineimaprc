@@ -5,29 +5,12 @@
 metadata = ~/.offlineimap
 accounts = NORBU09
 maxsyncaccounts = 2
-# max number of concurrent connections
-ui = blinkenlights
-
-#### GMAIL Account Settings ####
-#[Account GMAIL]
-#localrepository = LocalGmail
-#remoterepository = RemoteGmail
-#autorefresh = 10
-# minutes until next sync
-#quick = 5
-# number of 'quick' syncs between full syncs, saves time
-
-#[Repository LocalGmail]
-#type = Maildir     # format of the local repository. choose Maildir if you will use Mutt
-#localfolders = ~/.maildb/GMAIL  # location of the email
-#restoreatime = no   # don't let offlineimap touch the atime of files
-
-#[Repository RemoteGmail]
-#type = IMAP
-#remotehost = imap.gmail.com
-#remoteuser = greg.grossmeier@gmail.com
-#remotepass = yep
-#ssl = yes
+#ui = machineui
+ui = ttyui
+status_backend = sqlite
+autorefresh = 3  
+quick = 10  
+postsynchook = notmuch new
 
 #### NORBU09 Account Settings ####
 [Account NORBU09]
@@ -40,6 +23,7 @@ quick = 5
 type = Maildir
 localfolders = ~/.mail/NORBU09
 restoreatime = no
+folderfilter = lambda folder: not re.search('(^users\.|Server-Mails|Deleted|drafts)', folder)
 
 [Repository RemoteNorbu09]
 type = IMAP
@@ -48,5 +32,14 @@ remotehost = mail.norbu09.org
 remotepass = yep
 ssl = yes
 cert_fingerprint = 7b5510d30c75ba5d57793cf642348651347439c6
-folderfilter = lambda foldername: not re.search('(^users\.|Server-Mails|INBOX.Deleted)', foldername)
+folderfilter = lambda folder: not re.search('(^users\.|Server-Mails|Deleted|drafts)', folder)
 folderfilter = lambda folder: folder.startswith('INBOX')
+
+[mbnames]
+enabled = yes
+filename = ~/.mutt/mailboxes
+header = "mailboxes "
+peritem = "+%(accountname)s/%(foldername)s"
+sep = " "
+footer = "\n"
+

@@ -4,9 +4,9 @@
 
 
 ## caches
-set header_cache = "~/.mutt/cache/headers"
-set message_cachedir=~/.mutt/cache/bodies
-set certificate_file=~/.mutt/certificates
+#set header_cache = "~/.mutt/cache/headers"
+#set message_cachedir=~/.mutt/cache/bodies
+#set certificate_file=~/.mutt/certificates
 
 ## misc stuff
 set move = no
@@ -40,10 +40,21 @@ set nomark_old
 # editor config
 set editor='vim +/^$ ++1'
 set edit_hdrs           # let me edit the message headers
-set quote_regexp="^> " # Das ist _der_ quote Regex ...!!
-set record=+sent                # save a copyself in 'sent'
+set quote_regexp="^> "  # Das ist _der_ quote Regex ...!!
+#set record=+sent       # save a copyself in 'sent' -> handled by notmuch
 set include=yes         # Don't ask 'include message in reply'
 
+# Set From header
+my_hdr From: Lenz Gschwendtner <lenz@springtimesoft.com>
+set envelope_from
+
+# autoviews
+auto_view text/html
+alternative_order text/plain text/enriched text/html
+
+set mailcap_path    = ~/.mutt/mailcap
+## my notmuch definition
+source ~/.mutt/notmuch
 ## my colour definition
 source ~/.mutt/colours
 ## account definitions
