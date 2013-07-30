@@ -1,23 +1,57 @@
 mail setup
 ==========
 
-- install mutt (MUA)
-- install offlineimap (IMAP sync)
-- install lbdb (access to MacOS address book)
-- install nothingmutch
-- install afew
-
-still missing stuff (at least)
-- imapfilter (-> done, write about tagging)
-- smtp stuff (-> done document how)
-
-pointers/references:
-http://zzompp.hosting.mbar.fi/gregarius/feed.php?channel=15&iid=42893&y=2009&m=01&d=25
 
 todo:
 -----
 
-- write propper doku (blog post or such)
+- patch homebrew to make install option for notmuch-deliver
+- describe addressbook stuff, either via notmuch or via ldbm or via
+both?
+- install lbdb (access to MacOS address book)
+
+mutt-kz
+-------
+
+- make homebrew package
+
+offlineimap
+-----------
+
+is in homebrew, just install and drop in current config
+
+notmuch
+-------
+
+- install via homebrew
+- run `notmuch setup`
+
+afew
+----
+
+`afew` is a python script that can be used to automatically tag mails in
+`notmuch`. I am still playing with the config but there is a basic
+skeleton in `.config/afew/config`.
+
+Docs on how to set it up are on: https://github.com/teythoon/afew - I
+did not get round to bundle it for `homebrew` yet but dependencies like
+`dbacl` should be there by now.
+
+Next, setup a hook in the `notmuch` setup to run `afew` automatically
+every time we get new mail into `notmuch`. Create a `hooks` directory in your
+`notmuch` tree, that would be under your local mail root,
+`~/.mail/.notmuch/hooks/` in my case. In there create a file called
+`post-new` and put the following couple of lines in there:
+
+    #!/bin/sh
+    /usr/local/bin/afew --tag --new
+
+and make the file executable:
+
+    $ chmod +x ~/.mail/.notmuch/hooks/post-new
+
+This hooks will then tag all new mail with the rules set up in your afew
+config.
 
 Postfix on MacOS
 ----------------
@@ -53,3 +87,8 @@ going out you can run `colortail` with my color sceme like this:
     $ colortail -f -k ~/.colortail/conf.maillog /var/log/mail.log
 
 Sending mail should be sorted with this setup.
+
+----
+
+pointers/references:
+http://zzompp.hosting.mbar.fi/gregarius/feed.php?channel=15&iid=42893&y=2009&m=01&d=25
