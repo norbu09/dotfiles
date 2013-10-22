@@ -61,50 +61,7 @@ nnoremap ,m <c-]>
 map Q :q
 
 " colours
-" 'normal' must be first since it also sets 'background'
-" setting 'background' may cause other groups to change
-" leave thos on 'default' that are looking fine
-if 1
-"    highlight normal ctermbg=black ctermfg=NONE cterm=NONE
-    highlight normal ctermbg=NONE ctermfg=NONE cterm=NONE
-
-    "highlight Cursor       ctermbg=NONE ctermfg=NONE cterm=NONE
-    "highlight Directory    ctermbg=NONE ctermfg=NONE cterm=NONE
-    "highlight ErrorMsg     ctermbg=NONE ctermfg=NONE cterm=NONE
-    "highlight IncSearch    ctermbg=NONE ctermfg=NONE cterm=NONE
-    "highlight ModeMsg      ctermbg=NONE ctermfg=NONE cterm=NONE
-    "highlight MoreMsg      ctermbg=black ctermfg=lightgreen cterm=NONE
-    "highlight NonText      ctermbg=NONE ctermfg=NONE cterm=NONE
-    "highlight Question     ctermbg=black ctermfg=lightgreen cterm=NONE
-    "highlight SpecialKey   ctermbg=NONE ctermfg=NONE cterm=NONE
-    "highlight StatusLine   ctermbg=NONE ctermfg=NONE cterm=NONE
-    "highlight StatusLineNC ctermbg=NONE ctermfg=NONE cterm=NONE
-    "highlight Title        ctermbg=NONE ctermfg=NONE cterm=NONE
-    "highlight Visual       ctermbg=NONE ctermfg=NONE cterm=NONE
-    "highlight WarningMsg   ctermbg=NONE ctermfg=NONE cterm=NONE
-    "highlight LineNr       ctermbg=lightgray ctermfg=white cterm=NONE
-    "highlight Search       ctermbg=NONE ctermfg=NONE cterm=NONE
-else
-    highlight normal ctermbg=white ctermfg=black cterm=NONE
-
-    "highlight Cursor       ctermbg=NONE ctermfg=NONE cterm=NONE
-    "highlight Directory    ctermbg=NONE ctermfg=NONE cterm=NONE
-    "highlight ErrorMsg     ctermbg=NONE ctermfg=NONE cterm=NONE
-    "highlight IncSearch    ctermbg=NONE ctermfg=NONE cterm=NONE
-    "highlight ModeMsg      ctermbg=NONE ctermfg=NONE cterm=NONE
-    "highlight MoreMsg      ctermbg=black ctermfg=lightgreen cterm=NONE
-    "highlight NonText      ctermbg=NONE ctermfg=NONE cterm=NONE
-    "highlight Question     ctermbg=black ctermfg=lightgreen cterm=NONE
-    "highlight SpecialKey   ctermbg=NONE ctermfg=NONE cterm=NONE
-    "highlight StatusLine   ctermbg=NONE ctermfg=NONE cterm=NONE
-    "highlight StatusLineNC ctermbg=NONE ctermfg=NONE cterm=NONE
-    "highlight Title        ctermbg=NONE ctermfg=NONE cterm=NONE
-    "highlight Visual       ctermbg=NONE ctermfg=NONE cterm=NONE
-    "highlight WarningMsg   ctermbg=NONE ctermfg=NONE cterm=NONE
-    "highlight LineNr       ctermbg=lightgray ctermfg=white cterm=NONE
-    "highlight Search       ctermbg=NONE ctermfg=NONE cterm=NONE
-endif
-
+colors zenburn
 
 let myfiletypefile = '~/.vim/syntax/filetype.vim'
 " Syntax highlighting on
