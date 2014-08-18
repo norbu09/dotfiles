@@ -27,6 +27,8 @@ set   hidden
 set   history=300
 set   hlsearch
 set   incsearch
+set   ignorecase
+set   smartcase
 set   nojoinspaces
 set   nocindent 
 set   keywordprg=man
@@ -99,11 +101,21 @@ nmap <F8> :call SwitchNumbers() <CR>
 imap <F8> <C-O>:call SwitchNumbers() <CR>
 
 " jump to next/prev error
-nmap <C-n>   :cn <CR>
-nmap <C-p> :cp <CR>
-imap <C-n>   <C-O>:cn <CR>
-imap <C-p> <C-O>:cp <CR>
+"nmap <C-n>   :cn <CR>
+"nmap <C-p> :cp <CR>
+"imap <C-n>   <C-O>:cn <CR>
+"imap <C-p> <C-O>:cp <CR>
 
+" paste mode
+function! SwitchPaste()
+    if &paste
+        set nopaste
+    else
+        set paste
+    endif
+endfunction
+nmap \p :call SwitchPaste() <CR>
+imap \p <C-O>:call SwitchPaste() <CR>
 
 " to next window
 " nnoremap <f2> <c-w>w
@@ -282,23 +294,24 @@ endif
 "let erlang_skel_header = {"author": {"lenz@springtimesoft.com"}, "owner" : {"Springtimesoft LTD"}}
 let erlang_man_path = "/usr/local/share/man"
 
+let g:snippets_dir = "~/.vim/snippets"
 let g:snips_author = 'Lenz Gschendtner (springtimesoft LTD)'
 
 " Eclim Settings
 "use default Taglist instead of Eclim, avoid problem
-let g:EclimTaglistEnabled=0
+"let g:EclimTaglistEnabled=0
 "let g:taglisttoo_disabled = 1 "maybe of the same use of the above command 
 "if the current file is in a Eclipse project, open project tree automatically
-let g:EclimProjectTreeAutoOpen=1 
-let g:EclimProjectTreeExpandPathOnOpen=1
-let g:EclimProjectTreeSharedInstance=1  "share tree instance through all tabs
+"let g:EclimProjectTreeAutoOpen=1 
+"let g:EclimProjectTreeExpandPathOnOpen=1
+"let g:EclimProjectTreeSharedInstance=1  "share tree instance through all tabs
 " use tabnew instead of split for new action
-let g:EclimProjectTreeActions = [ {'pattern': '.*', 'name': 'Tab', 'action': 'tabnew'} ]
+"let g:EclimProjectTreeActions = [ {'pattern': '.*', 'name': 'Tab', 'action': 'tabnew'} ]
 
 "for current word search for eclim
-nmap <f9> :exec 'vimgrep /\<'.expand('<cword>').'\>/g **/*.xml **/*.java'<CR>
+"nmap <f9> :exec 'vimgrep /\<'.expand('<cword>').'\>/g **/*.xml **/*.java'<CR>
 "for vimgrep next and previous result
-nmap <c-n> :cn<CR>
-nmap <c-p> :cp<CR>
+"nmap <c-n> :cn<CR>
+"nmap <c-p> :cp<CR>
 
 

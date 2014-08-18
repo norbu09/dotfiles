@@ -12,10 +12,14 @@ snippet sub
 	
 	${2:func_descr}
 
+	This function returns ${3:returns}
+
 	=cut
 
 	sub ${1:function_name} {
-		${3:#body ...}
+		my (${4:var}) = @_;
+
+		return;
 	}
 # Catalyst sub
 snippet subc
@@ -91,6 +95,9 @@ snippet for
 # Foreach Loop One-line
 snippet fore
 	${1:expression} foreach @${2:array};${3}
+# Mouse has snippet
+snippet has
+	has '${1:expression}' => (is => 'rw', isa => '${2:type}', default => sub {${3:default}});
 # Package
 snippet cl
 	package ${1:ClassName};
@@ -179,3 +186,7 @@ snippet given
 	given(${1}){
 		when(${2}) {${3};}
 	}
+
+# when line
+snippet when
+	when(${1}) {${2};}
