@@ -28,6 +28,7 @@ Plugin 'tpope/vim-sensible'
 Plugin 'tpope/vim-commentary'
 Plugin 'jimenezrick/vimerl'
 Plugin 'bling/vim-airline'
+Plugin 'edkolev/tmuxline.vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -89,6 +90,17 @@ colors zenburn
 " syntastic settings
 let g:syntastic_enable_perl_checker = 1
 let g:syntastic_perl_checkers = ['perl']
+
+let g:tmuxline_powerline_separators = 0
+let g:tmuxline_preset = {
+      \'a'    : '#S',
+      \'c'    : '#(battery -t)',
+      \'win'  : ['#I', '#W'],
+      \'cwin' : ['#I', '#W', '#F'],
+      \'y'    : ['%R', '%a', '%Y'],
+      \'z'    : '#H'}
+
+
 
 " syntax highlighting switch
 function! SwitchSyntax()

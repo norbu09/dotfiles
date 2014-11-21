@@ -1,0 +1,50 @@
+# ~/.tmuxinator/development.yml
+
+name: iwmn
+root: ~/code/iwmn/
+
+# Optional tmux socket
+# socket_name: foo
+
+# Runs before everything. Use it to start daemons etc.
+# pre: sudo /etc/rc.d/mysqld start
+
+# Runs in each window and pane before window/pane specific commands. Useful for setting up interpreter versions.
+# pre_window: rbenv shell 2.0.0-p247
+
+# Pass command line options to tmux. Useful for specifying a different tmux.conf.
+# tmux_options: -f ~/.tmux.mac.conf
+
+# Change the command to call tmux.  This can be used by derivatives/wrappers like byobu.
+# tmux_command: byobu
+
+windows:
+    - base:
+        layout: 1fe2,203x50,0,0[203x40,0,0,26,203x9,0,41,27]
+        panes:
+            - vim:
+                - cd ~/code/iwmn/iwmn-base/IRegistrar/
+                - vim
+            - vagrant:
+                - cd ~/code/iwmn/vm
+                - vagrant ssh
+                - sudo tail -f /var/log/syslog
+    - hase:
+        layout: 1fe2,203x50,0,0[203x40,0,0,26,203x9,0,41,27]
+        panes:
+            - vim:
+                - cd ~/code/iwmn/hase/perl/
+                - vim
+            - vagrant:
+                - cd ~/code/iwmn/vm
+                - vagrant ssh
+    - frontend:
+        - cd ~/code/iwmn/iwmn-frontend/
+        - vim
+    - nsearch:
+        layout: 1fe2,203x50,0,0[203x40,0,0,26,203x9,0,41,27]
+        panes:
+            - vim:
+                - cd ~/code/iwmn/nsearch2/
+                - vim
+            - # console
