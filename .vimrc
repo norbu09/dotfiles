@@ -5,7 +5,6 @@ mapclear!
 
 " remove all default autocommands
 au!
-"map <F3> <Plug>SimpleFold_Foldsearch
 
 " setup Vundel
 set nocompatible              " be iMproved, required
@@ -14,8 +13,6 @@ filetype off                  " required
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
 
 " let Vundle manage Vundle, required
 Plugin 'gmarik/Vundle.vim'
@@ -28,6 +25,7 @@ Plugin 'scrooloose/syntastic'
 Plugin 'mattfoster/vim-Perl-Critic'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-sensible'
+Plugin 'tpope/vim-commentary'
 Plugin 'jimenezrick/vimerl'
 Plugin 'bling/vim-airline'
 
@@ -46,7 +44,6 @@ set   backupext=.vimbk
 set   cmdheight=2
 "set   columns=120
 set   comments&
-set   nocompatible
 set   directory=.
 set   noequalalways
 set   expandtab
@@ -63,7 +60,6 @@ set   keywordprg=man
 set   listchars=eol:$,tab:>.,trail:$,extends:>
 set   ruler
 set   scrolloff=5
-"set   shellpipe=2\>&1\ \|\ tee
 set   shiftwidth=4
 set   shortmess=at
 set   showcmd
@@ -80,9 +76,6 @@ set   nowrap
 set   writebackup
 set   foldmethod=marker
 
-"set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [POS=%04l,%04v][%p%%]
-"set laststatus=2 
-
 set exrc
 
 " c-] (jump to tag) not available in BSD
@@ -93,18 +86,9 @@ map Q :q
 " colours
 colors zenburn
 
-let myfiletypefile = '~/.vim/syntax/filetype.vim'
-" Syntax highlighting on
-let mysyntaxfile = '~/.vim/syntax/mysyntax.vim'
-syntax on
-
-" Search results will be highlighted, but we don't want the
-" result of the previous session's last search to show up per
-" default.
-" (doesn't work for some reson)
-"nohlsearch
-map <f6> :nohlsearch<cr>
-
+" syntastic settings
+let g:syntastic_enable_perl_checker = 1
+let g:syntastic_perl_checkers = ['perl']
 
 " syntax highlighting switch
 function! SwitchSyntax()
@@ -116,6 +100,7 @@ function! SwitchSyntax()
 endfunction
 nmap <F7> :call SwitchSyntax() <CR>
 imap <F7> <C-O>:call SwitchSyntax() <CR>
+map <f6> :nohlsearch<cr>
 
 " line numbers switch
 function! SwitchNumbers()
@@ -150,11 +135,6 @@ imap \p <C-O>:call SwitchPaste() <CR>
 " switch tab
 nmap <F3> gt<cr>
 nmap <S-F3> gT<cr>
-" resize window
-"nnoremap <f4> <c-w>+
-"nnoremap <f5> <c-w>-
-"inoremap <f4> <c-o><c-w>+
-"inoremap <f5> <c-o><c-w>-
 
 " insert date/time
 inoremap <c-t> <c-r>=strftime("%Y-%m-%dT%H:%M:%S")<cr>
@@ -211,7 +191,6 @@ augroup perl
   " autoindent
   autocmd FileType perl set autoindent|set smartindent
   let perl_fold=1
-  let perl_fold_blocks=1
 
   nmap ,3 :!perlcritic -severity 2 -verbose 10 %<CR>
   nmap ,4 :!perlcritic -severity 2 -verbose 1 %<CR>
@@ -326,37 +305,20 @@ let g:snippets_dir = "~/.vim/snippets"
 let g:snips_author = 'Lenz Gschendtner (springtimesoft LTD)'
 
 " airline settings
-"let g:airline_powerline_fonts = 1
+"
 let g:airline#extensions#tabline#enabled = 1
-"let g:airline#extensions#tabline#left_sep = ' '
-"let g:airline#extensions#tabline#left_alt_sep = '|'
+
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
-
 " unicode symbols
 let g:airline_left_sep = ''
 let g:airline_right_sep = ''
-let g:airline_symbols.linenr = '№'
+let g:airline_symbols.linenr = '⌙'
 let g:airline_symbols.branch = '⌥'
 let g:airline_symbols.paste = '✁'
-let g:airline_symbols.whitespace = ' '
+let g:airline_symbols.whitespace = '‣'
 
-" Eclim Settings
-"use default Taglist instead of Eclim, avoid problem
-"let g:EclimTaglistEnabled=0
-"let g:taglisttoo_disabled = 1 "maybe of the same use of the above command 
-"if the current file is in a Eclipse project, open project tree automatically
-"let g:EclimProjectTreeAutoOpen=1 
-"let g:EclimProjectTreeExpandPathOnOpen=1
-"let g:EclimProjectTreeSharedInstance=1  "share tree instance through all tabs
-" use tabnew instead of split for new action
-"let g:EclimProjectTreeActions = [ {'pattern': '.*', 'name': 'Tab', 'action': 'tabnew'} ]
-
-"for current word search for eclim
-"nmap <f9> :exec 'vimgrep /\<'.expand('<cword>').'\>/g **/*.xml **/*.java'<CR>
-"for vimgrep next and previous result
-"nmap <c-n> :cn<CR>
-"nmap <c-p> :cp<CR>
-
+" Gundo settings
+nnoremap <F5> :GundoToggle<CR>
 
