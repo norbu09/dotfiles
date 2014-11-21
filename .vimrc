@@ -7,6 +7,34 @@ mapclear!
 au!
 "map <F3> <Plug>SimpleFold_Foldsearch
 
+" setup Vundel
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'gmarik/Vundle.vim'
+
+" Vundle managed plugins
+Plugin 'lbdbq'
+Plugin 'sjl/gundo.vim'
+Plugin 'msanders/snipmate.vim'
+Plugin 'scrooloose/syntastic'
+Plugin 'mattfoster/vim-Perl-Critic'
+Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-sensible'
+Plugin 'jimenezrick/vimerl'
+Plugin 'bling/vim-airline'
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+
 
 " set preferred options
 set   autoindent
@@ -52,8 +80,8 @@ set   nowrap
 set   writebackup
 set   foldmethod=marker
 
-set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [POS=%04l,%04v][%p%%]
-set laststatus=2 
+"set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [POS=%04l,%04v][%p%%]
+"set laststatus=2 
 
 set exrc
 
@@ -232,20 +260,20 @@ augroup html
 
   " Set options for HTML files
   " limit textwidth and adjust for german umlauts
-  autocmd BufEnter *.html,*.sgml,*.tpl inoremap ‰ &auml;
-  autocmd BufEnter *.html,*.sgml,*.tpl inoremap ƒ &Auml;
-  autocmd BufEnter *.html,*.sgml,*.tpl inoremap ˆ &ouml;
-  autocmd BufEnter *.html,*.sgml,*.tpl inoremap ÷ &Ouml;
-  autocmd BufEnter *.html,*.sgml,*.tpl inoremap ¸ &uuml;
-  autocmd BufEnter *.html,*.sgml,*.tpl inoremap ‹ &Uuml;
-  autocmd BufEnter *.html,*.sgml,*.tpl inoremap ﬂ &szlig;
-  autocmd BufLeave *.html,*.sgml,*.tpl iunmap ‰
-  autocmd BufLeave *.html,*.sgml,*.tpl iunmap ƒ
-  autocmd BufLeave *.html,*.sgml,*.tpl iunmap ¸
-  autocmd BufLeave *.html,*.sgml,*.tpl iunmap ‹
-  autocmd BufLeave *.html,*.sgml,*.tpl iunmap ˆ
-  autocmd BufLeave *.html,*.sgml,*.tpl iunmap ÷
-  autocmd BufLeave *.html,*.sgml,*.tpl iunmap ﬂ
+  autocmd BufEnter *.html,*.sgml,*.tpl inoremap √§ &auml;
+  autocmd BufEnter *.html,*.sgml,*.tpl inoremap √Ñ &Auml;
+  autocmd BufEnter *.html,*.sgml,*.tpl inoremap √∂ &ouml;
+  autocmd BufEnter *.html,*.sgml,*.tpl inoremap √ñ &Ouml;
+  autocmd BufEnter *.html,*.sgml,*.tpl inoremap √º &uuml;
+  autocmd BufEnter *.html,*.sgml,*.tpl inoremap √ú &Uuml;
+  autocmd BufEnter *.html,*.sgml,*.tpl inoremap √ü &szlig;
+  autocmd BufLeave *.html,*.sgml,*.tpl iunmap √§
+  autocmd BufLeave *.html,*.sgml,*.tpl iunmap √Ñ
+  autocmd BufLeave *.html,*.sgml,*.tpl iunmap √º
+  autocmd BufLeave *.html,*.sgml,*.tpl iunmap √ú
+  autocmd BufLeave *.html,*.sgml,*.tpl iunmap √∂
+  autocmd BufLeave *.html,*.sgml,*.tpl iunmap √ñ
+  autocmd BufLeave *.html,*.sgml,*.tpl iunmap √ü
 
   autocmd BufEnter *.sgml inoreabbrev li <listitem><para></para></listitem><C-O>17h
   autocmd BufEnter *.sgml inoreabbrev pa <para></para><C-O>6h
@@ -284,7 +312,7 @@ augroup END
 nnoremap <silent> _t :%!perltidy -q -st -se -i=4 -ci=4 -pt=2 -otr -sot -sct -nsfs -noll -nola<Enter>
 vnoremap <silent> _t :!perltidy -q -st -se -i=4 -ci=4 -pt=2 -otr -sot -sct -nsfs -noll -nola<Enter>
 
-call pathogen#infect()
+" call pathogen#infect()
 
 if has("autocmd")
   filetype plugin indent on
@@ -296,6 +324,23 @@ let erlang_man_path = "/usr/local/share/man"
 
 let g:snippets_dir = "~/.vim/snippets"
 let g:snips_author = 'Lenz Gschendtner (springtimesoft LTD)'
+
+" airline settings
+"let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+"let g:airline#extensions#tabline#left_sep = ' '
+"let g:airline#extensions#tabline#left_alt_sep = '|'
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+
+" unicode symbols
+let g:airline_left_sep = ''
+let g:airline_right_sep = ''
+let g:airline_symbols.linenr = '‚Ññ'
+let g:airline_symbols.branch = '‚å•'
+let g:airline_symbols.paste = '‚úÅ'
+let g:airline_symbols.whitespace = ' '
 
 " Eclim Settings
 "use default Taglist instead of Eclim, avoid problem
