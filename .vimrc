@@ -18,17 +18,23 @@ call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 
 " Vundle managed plugins
-Plugin 'lbdbq'
 Plugin 'sjl/gundo.vim'
-Plugin 'msanders/snipmate.vim'
-Plugin 'scrooloose/syntastic'
-Plugin 'mattfoster/vim-Perl-Critic'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-sensible'
 Plugin 'tpope/vim-commentary'
-Plugin 'jimenezrick/vimerl'
 Plugin 'bling/vim-airline'
 Plugin 'edkolev/tmuxline.vim'
+
+" language support
+Plugin 'msanders/snipmate.vim'
+Plugin 'scrooloose/syntastic'
+Plugin 'mattfoster/vim-Perl-Critic'
+Plugin 'jimenezrick/vimerl'
+Plugin 'elixir-lang/vim-elixir'
+Bundle 'carlosgaldino/elixir-snippets'
+
+" mail support
+Plugin 'lbdbq'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
