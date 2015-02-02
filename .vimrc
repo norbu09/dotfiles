@@ -26,11 +26,15 @@ Plugin 'bling/vim-airline'
 Plugin 'edkolev/tmuxline.vim'
 
 " language support
-Plugin 'msanders/snipmate.vim'
 Plugin 'scrooloose/syntastic'
 Plugin 'mattfoster/vim-Perl-Critic'
 Plugin 'jimenezrick/vimerl'
 Plugin 'elixir-lang/vim-elixir'
+
+" Snippets management
+Bundle "MarcWeber/vim-addon-mw-utils.git"
+Bundle "tomtom/tlib_vim.git"
+Bundle "spf13/snipmate.vim"
 Bundle 'carlosgaldino/elixir-snippets'
 
 " mail support
@@ -314,6 +318,8 @@ vnoremap <silent> _t :!perltidy -q -st -se -i=4 -ci=4 -pt=2 -otr -sot -sct -nsfs
 if has("autocmd")
   filetype plugin indent on
 endif
+
+autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 
 " erlang presets
 "let erlang_skel_header = {"author": {"lenz@springtimesoft.com"}, "owner" : {"Springtimesoft LTD"}}

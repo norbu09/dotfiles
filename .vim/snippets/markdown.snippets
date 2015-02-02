@@ -1,0 +1,17 @@
+# #!/usr/bin/perl
+snippet post
+	---
+	layout: post
+	title: ${1:title}
+	description: ${2:desc}
+	modified: `system("date +%Y-%m-%d")`
+	category: articles
+	tags: [post]
+	comments: false
+	share: true
+	---
+
+	${4:body}
+
+snippet li
+	[${1:text}](${2:link})
