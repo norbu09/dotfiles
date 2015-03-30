@@ -1,0 +1,19 @@
+#!/bin/sh
+
+for i in `find . -name *.sw[opqrs]`
+do
+    echo "deleting $i..."
+    /bin/rm $i
+done
+
+for i in `find . -name .vimbk`
+do
+    echo "deleting $i..."
+    /bin/rm -rf $i
+done
+
+for i in `find . -name .DS_Store`
+do
+    echo "deleting $i..."
+    /bin/rm $i
+done

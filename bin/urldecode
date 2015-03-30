@@ -1,0 +1,7 @@
+#!/usr/bin/perl
+
+use strict;
+use URI::Escape;
+
+my $string = join(' ', @ARGV);
+print uri_unescape($string) ."\n";

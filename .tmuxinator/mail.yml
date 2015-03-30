@@ -22,7 +22,7 @@ windows:
   - mail:
       layout: fda7,203x50,0,0[203x5,0,0,0,203x44,0,6{151x44,0,6,1,51x44,152,6[51x32,152,6,2,51x11,152,39,3]}]
       panes:
-        - colortail -f -k ~/.colortail/conf.maillog /var/log/mail.log
+        - vim +TW
         - mutt
         - offlineimap
-        - while true; do sleep 300 && notmuch new; done
+        - while true; do sleep 300 && echo -n "checking ... " && notmuch new; done

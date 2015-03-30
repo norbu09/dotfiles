@@ -1,0 +1,6 @@
+#!/usr/bin/perl
+
+my $time = shift;
+
+print scalar localtime($time) ." Local\n";
+print scalar gmtime($time) ." UTC\n";

@@ -1,0 +1,9 @@
+#!/usr/bin/env perl
+
+use 5.010;
+use DateTime::Format::Flexible;
+my $time = join(' ', @ARGV);
+say "$time in epoch seconds:";
+
+my $dt = DateTime::Format::Flexible->parse_datetime($time);
+say $dt->epoch;

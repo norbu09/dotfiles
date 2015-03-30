@@ -28,9 +28,9 @@ set pager_stop                          # Don't skip msgs on next page.
 set ascii_chars             # Use + and - and > not the clever
 
 ## mail view
-ignore "Authentication-Results:"
-ignore "DomainKey-Signature:"
-ignore "DKIM-Signature:"
+ignore *
+unignore from date subject to cc
+unignore organization organisation x-mailer: x-mailing-list:
 hdr_order Date From To Cc
 set pager_context=3            # 3 lines of context in pager
 set pager_format="%Z[%C(%m)]^%.50s%>^[%l]"      # Format der 'Mailanzeigestatuszeile'
@@ -38,28 +38,40 @@ set pager_stop          # Am Ende der Mail nicht zur naechsten springen
 set nomark_old
 
 # editor config
-set editor='vim +/^$ ++1'
+set editor="vim -c 'set spell spelllang=de,en' +/^$ ++1"
 set edit_hdrs           # let me edit the message headers
 set quote_regexp="^> "  # Das ist _der_ quote Regex ...!!
 #set record=+sent       # save a copyself in 'sent' -> handled by notmuch
 set include=yes         # Don't ask 'include message in reply'
 
 # Set From header
-my_hdr From: Lenz Gschwendtner <lenz@springtimesoft.com>
+my_hdr From: Lenz Gschwendtner <lenz@ideegeo.com>
 set envelope_from
 
 # autoviews
 auto_view text/html
 alternative_order text/plain text/enriched text/html
 
+# pgp settings
+set pgp_use_gpg_agent = yes
+set pgp_sign_as = 0x32C66B3BFDD0D423
+set pgp_timeout = 3600
+set crypt_autosign = yes
+set crypt_replyencrypt = yes
+
+# open links with cb
+macro index cb |urlview 'call urlview to extract URLs out of a message'
+macro pager cb |urlview 'call urlview to extract URLs out of a message'
+
+
 set mailcap_path    = ~/.mutt/mailcap
 ## my notmuch definition
 source ~/.mutt/notmuch
 ## my colour definition
-source ~/.mutt/colours
+source ~/.mutt/colours.zenburn
 ## account definitions
 source ~/.mutt/accounts
 ## mailbox definitions
 source ~/.mutt/mailboxes
 ## pgp definitions
-source ~/.mutt/pgp
+source ~/.mutt/gpg.rc

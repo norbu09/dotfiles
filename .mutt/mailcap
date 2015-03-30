@@ -3,6 +3,11 @@ image/*; $HOME/.mutt/view_attachment %s
 
 # PDFs
 application/pdf; $HOME/.mutt/view_attachment %s
+application/x-pdf; $HOME/.mutt/view_attachment %s
+x-application/apple-pdf; $HOME/.mutt/view_attachment %s
+
+# Office stuff
+application/octet-stream; /usr/bin/open %s
 
 # HTML
 text/html; $HOME/.mutt/view_attachment %s html

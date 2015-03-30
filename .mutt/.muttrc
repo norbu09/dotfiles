@@ -44,6 +44,14 @@ set quote_regexp="^> " # Das ist _der_ quote Regex ...!!
 set record=+sent                # save a copyself in 'sent'
 set include=yes         # Don't ask 'include message in reply'
 
+# pgp settings
+set pgp_use_gpg_agent = yes
+set pgp_sign_as = 0x32C66B3BFDD0D423
+set pgp_timeout = 3600
+set crypt_autosign = yes
+set crypt_replyencrypt = yes
+
+
 ## my colour definition
 source ~/.mutt/colours
 ## account definitions
@@ -51,4 +59,4 @@ source ~/.mutt/accounts
 ## mailbox definitions
 source ~/.mutt/mailboxes
 ## pgp definitions
-source ~/.mutt/pgp
+source ~/.mutt/gpg.rc

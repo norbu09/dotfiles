@@ -24,6 +24,9 @@ Plugin 'tpope/vim-sensible'
 Plugin 'tpope/vim-commentary'
 Plugin 'bling/vim-airline'
 Plugin 'edkolev/tmuxline.vim'
+Bundle 'wakatime/vim-wakatime'
+Bundle 'farseer90718/vim-taskwarrior'
+Bundle 'Shougo/unite.vim'
 
 " language support
 Plugin 'scrooloose/syntastic'
