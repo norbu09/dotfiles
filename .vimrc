@@ -24,6 +24,7 @@ Plugin 'tpope/vim-sensible'
 Plugin 'tpope/vim-commentary'
 Plugin 'bling/vim-airline'
 Plugin 'edkolev/tmuxline.vim'
+Plugin 'benmills/vimux'
 Bundle 'wakatime/vim-wakatime'
 Bundle 'farseer90718/vim-taskwarrior'
 Bundle 'Shougo/unite.vim'
@@ -33,6 +34,7 @@ Plugin 'scrooloose/syntastic'
 Plugin 'mattfoster/vim-Perl-Critic'
 Plugin 'jimenezrick/vimerl'
 Plugin 'elixir-lang/vim-elixir'
+Plugin 'spiegela/vimix'
 
 " Snippets management
 Bundle "MarcWeber/vim-addon-mw-utils.git"
@@ -349,3 +351,5 @@ let g:airline_symbols.whitespace = '‣'
 " Gundo settings
 nnoremap <F5> :GundoToggle<CR>
 
+" vimix mappings
+let g:vimix_map_keys = 1
