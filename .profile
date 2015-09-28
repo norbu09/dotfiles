@@ -1,6 +1,6 @@
 # $FreeBSD: src/etc/root/dot.profile,v 1.20 1999/08/27 23:24:09 peter Exp $
 #
-PATH=/bin:/sbin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:${HOME}/bin:$HOME/.rvm/bin:/usr/local/texlive/2013/bin/x86_64-darwin
+PATH=/bin:/sbin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:${HOME}/bin:/usr/local/texlive/2013/bin/x86_64-darwin:${HOME}/.rvm/bin
 export PATH
 TERM=${TERM:-cons25}
 export TERM
@@ -21,6 +21,9 @@ LSCOLORS='bxfxdxcxBxahahBxBxbxbx'
 export LSCOLORS
 
 WHOIS=`which whois`
+
+########## functions
+
 iwhois() {
     resolver=".whois.geek.nz"
     tld=`echo ${@: -1} | awk -F "." '{print $NF}'`
@@ -31,6 +34,28 @@ iwhois() {
     fi;
 }
 
+## Print a horizontal rule
+rule () {
+	printf "%$(tput cols)s\n"|tr " " "─"}}
+}
+
+## format git diffs
+function strip_diff_leading_symbols () {
+	color_code_regex="(\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K])"
+
+	# simplify the unified patch diff header
+	gsed -r "s/^($color_code_regex)diff --git .*$//g" | \
+		gsed -r "s/^($color_code_regex)index .*$/\n\1$(rule)/g" | \
+		gsed -r "s/^($color_code_regex)\+\+\+(.*)$/\1+++\5\n\1$(rule)\x1B\[m/g" #|\
+
+	# actually strips the leading symbols
+#		gsed -r "s/^($color_code_regex)[\+\-]/\1 /g"
+}
+
+
+###################
+
+
 alias l='ls -loBaFT'
 alias ls='ls -Ga'
 alias rm='rm -i'
@@ -38,24 +63,31 @@ alias mtr='mtr --curses'
 #alias whois='iwhois'
 alias idid='idone'
 alias less=$PAGER
-alias docker=docker-osx
 alias apg='apg -m 20 -M SNCL -n 1'
+alias issues='ghi --no-pager list'
+alias fuck='eval $(thefuck $(fc -ln -1)); history -r'
+GRC=`which grc`
 
 HISTIGNORE='&:l: *'; export HISTIGNORE
 
+
+if [ -f `which todo.sh` ]; then
+    alias t='todo.sh'
+fi
+
 if [ ! -f ${HOME}/.gpg-agent-info ]; then
+    # GPG_TTY=$(tty)
+    # export GPG_TTY
     gpg-agent --daemon --enable-ssh-support --write-env-file "${HOME}/.gpg-agent-info"
 fi
 if [ -f "${HOME}/.gpg-agent-info" ]; then
     . "${HOME}/.gpg-agent-info"
     export GPG_AGENT_INFO
     export SSH_AUTH_SOCK
-    GPG_TTY=$(tty)
-    export GPG_TTY
 fi
 
-
 if [ -f `which brew` ]; then
+    # echo "Setting up Homebrew ..."
     if [ -f `brew --prefix git`/etc/bash_completion.d/git-completion.bash ]; then
         source `brew --prefix git`/etc/bash_completion.d/git-completion.bash
     fi
@@ -67,6 +99,15 @@ if [ -f `which brew` ]; then
     if [ -d `brew --prefix`/opt/android-sdk ]; then
         export ANDROID_HOME=`brew --prefix`/opt/android-sdk
     fi
+
+    if [ -d `brew --prefix`/share/git-core/contrib/diff-highlight ]; then
+        ln -sf "$(brew --prefix)/share/git-core/contrib/diff-highlight/diff-highlight" ~/bin/diff-highlight
+    fi
+
+    if [ -d `brew --prefix`/etc/grc.bashrc ]; then
+        source "`brew --prefix`/etc/grc.bashrc"
+    fi
+
 fi
 
 if [ -d "/Library/Java/JavaVirtualMachines/1.6.0_45-b06-451.jdk" ]; then
@@ -75,15 +116,17 @@ fi
 
 if [ -f `which tmuxinator` ]; then
     if [ -f ~/.bin/tmuxinator.bash ]; then
+        echo "Setting up tmuxinator ..."
         source ~/.bin/tmuxinator.bash
     fi
 fi
 
-if [ -f `which rvm` ]; then
-    if [ -f ~/.rvm/scripts/rvm ]; then
-        source ~/.rvm/scripts/rvm
-    fi
-fi
+# if [ -f `which rvm` ]; then
+#     if [ -f ~/.rvm/scripts/rvm ]; then
+#         echo "Setting up rvm ..."
+#         rvm use ruby-1.9.3-p547
+#     fi
+# fi
 
 if which plenv > /dev/null; then eval "$(plenv init -)"; fi
 
@@ -99,3 +142,5 @@ fi
 export PS1
 export DISABLE_AUTO_TITLE=true
 tset
+
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting

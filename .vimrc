@@ -10,44 +10,116 @@ au!
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+"NeoBundle Scripts-----------------------------
+if has('vim_starting')
+  if &compatible
+    set nocompatible               " Be iMproved
+  endif
 
-" let Vundle manage Vundle, required
-Plugin 'gmarik/Vundle.vim'
+  " Required:
+  set runtimepath+=/Users/lenz/.vim/bundle/neobundle.vim/
+endif
 
-" Vundle managed plugins
-Plugin 'sjl/gundo.vim'
-Plugin 'tpope/vim-fugitive'
-Plugin 'tpope/vim-sensible'
-Plugin 'tpope/vim-commentary'
-Plugin 'bling/vim-airline'
-Plugin 'edkolev/tmuxline.vim'
-Plugin 'benmills/vimux'
-Bundle 'wakatime/vim-wakatime'
-Bundle 'farseer90718/vim-taskwarrior'
-Bundle 'Shougo/unite.vim'
+" Required:
+call neobundle#begin(expand('/Users/lenz/.vim/bundle'))
+
+" Let NeoBundle manage NeoBundle
+" Required:
+NeoBundleFetch 'Shougo/neobundle.vim'
+
+" Add or remove your Bundles here:
+" NeoBundle 'Shougo/neosnippet.vim'
+" NeoBundle 'Shougo/neosnippet-snippets'
+" NeoBundle 'tpope/vim-fugitive'
+" NeoBundle 'ctrlpvim/ctrlp.vim'
+" NeoBundle 'flazz/vim-colorschemes'
+
+NeoBundle 'sjl/gundo.vim'
+NeoBundle 'tpope/vim-fugitive'
+NeoBundle 'tpope/vim-sensible'
+NeoBundle 'tpope/vim-commentary'
+NeoBundle 'bling/vim-airline'
+NeoBundle 'edkolev/tmuxline.vim'
+NeoBundle 'benmills/vimux'
+NeoBundle 'wakatime/vim-wakatime'
+NeoBundle 'farseer90718/vim-taskwarrior'
+NeoBundle 'Shougo/unite.vim'
+NeoBundle 'Thinca/vim-ref'
+NeoBundle 'Shougo/vimproc.vim', {'build': {'mac': 'make -f make_mac.mak', 'linux': 'make', 'unix': 'gmake'}}
+NeoBundle 'powerman/vim-plugin-AnsiEsc'
 
 " language support
-Plugin 'scrooloose/syntastic'
-Plugin 'mattfoster/vim-Perl-Critic'
-Plugin 'jimenezrick/vimerl'
-Plugin 'elixir-lang/vim-elixir'
-Plugin 'spiegela/vimix'
+NeoBundle 'scrooloose/syntastic'
+NeoBundle 'mattfoster/vim-Perl-Critic'
+NeoBundle 'jimenezrick/vimerl'
+NeoBundle 'elixir-lang/vim-elixir'
+NeoBundle 'spiegela/vimix'
+" NeoBundle 'sanmiguel/helpex.vim'
 
 " Snippets management
-Bundle "MarcWeber/vim-addon-mw-utils.git"
-Bundle "tomtom/tlib_vim.git"
-Bundle "spf13/snipmate.vim"
-Bundle 'carlosgaldino/elixir-snippets'
+NeoBundle "MarcWeber/vim-addon-mw-utils.git"
+NeoBundle "tomtom/tlib_vim.git"
+NeoBundle "spf13/snipmate.vim"
+NeoBundle 'carlosgaldino/elixir-snippets'
 
 " mail support
-Plugin 'lbdbq'
+NeoBundle 'lbdbq'
+
+" You can specify revision/branch/tag.
+" NeoBundle 'Shougo/vimshell', { 'rev' : '3787e5' }
+
+" Required:
+call neobundle#end()
+
+" Required:
+filetype plugin indent on
+
+" If there are uninstalled bundles found on startup,
+" this will conveniently prompt you to install them.
+NeoBundleCheck
+"End NeoBundle Scripts-------------------------
+
+
+" set the runtime path to include Vundle and initialize
+" set rtp+=~/.vim/bundle/Vundle.vim
+" call vundle#begin()
+
+" let Vundle manage Vundle, required
+" Plugin 'gmarik/Vundle.vim'
+
+" Vundle managed plugins
+" Plugin 'sjl/gundo.vim'
+" Plugin 'tpope/vim-fugitive'
+" Plugin 'tpope/vim-sensible'
+" Plugin 'tpope/vim-commentary'
+" Plugin 'bling/vim-airline'
+" Plugin 'edkolev/tmuxline.vim'
+" Plugin 'benmills/vimux'
+" Bundle 'wakatime/vim-wakatime'
+" Bundle 'farseer90718/vim-taskwarrior'
+" Bundle 'Shougo/unite.vim'
+" Bundle 'Thinca/vim-ref'
+" Bundle 'Shougo/vimproc.vim'
+
+" language support
+" Plugin 'scrooloose/syntastic'
+" Plugin 'mattfoster/vim-Perl-Critic'
+" Plugin 'jimenezrick/vimerl'
+" Plugin 'elixir-lang/vim-elixir'
+" Plugin 'spiegela/vimix'
+
+" Snippets management
+" Bundle "MarcWeber/vim-addon-mw-utils.git"
+" Bundle "tomtom/tlib_vim.git"
+" Bundle "spf13/snipmate.vim"
+" Bundle 'carlosgaldino/elixir-snippets'
+
+" mail support
+" Plugin 'lbdbq'
 
 " All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
+" call vundle#end()            " required
+" filetype plugin indent on    " required
 
 
 " set preferred options

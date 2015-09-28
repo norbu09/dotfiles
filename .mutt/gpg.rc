@@ -72,6 +72,7 @@ set pgp_list_secring_command="gpg --no-verbose --batch --quiet --with-colons --l
 
 # fetch keys
 # set pgp_getkeys_command="pkspxycwrap %r"
+set pgp_verify_sig="ask-yes"
 
 # pattern for good signature - may need to be adapted to locale!
 
@@ -85,3 +86,6 @@ set pgp_good_sign="^\\[GNUPG:\\] GOODSIG"
 
 # signature filename
 #set pgp_mime_signature_filename="signature.asc"
+
+# decode old style inline
+message-hook '!(~g|~G) ~b"^-----BEGIN\ PGP\ (SIGNED\ )?MESSAGE"' "exec check-traditional-pgp"
