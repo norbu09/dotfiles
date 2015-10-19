@@ -54,6 +54,7 @@ NeoBundle 'mattfoster/vim-Perl-Critic'
 NeoBundle 'jimenezrick/vimerl'
 NeoBundle 'elixir-lang/vim-elixir'
 NeoBundle 'spiegela/vimix'
+NeoBundle 'sanmiguel/helpex.vim'
 " NeoBundle 'sanmiguel/helpex.vim'
 
 " Snippets management
