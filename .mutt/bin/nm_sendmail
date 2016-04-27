@@ -1,2 +1,3 @@
 #!/bin/bash
-tee >(notmuch-deliver -t sent -f Sent) | sendmail -oem -oi $*
+NOTMUCH=/usr/local/bin/notmuch-deliver
+tee >(${NOTMUCH} -c -t sent -f Sent) | sendmail -oem -oi $*

@@ -38,11 +38,11 @@ NeoBundle 'sjl/gundo.vim'
 NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'tpope/vim-sensible'
 NeoBundle 'tpope/vim-commentary'
+NeoBundle 'tpope/vim-obsession'
 NeoBundle 'bling/vim-airline'
-NeoBundle 'edkolev/tmuxline.vim'
 NeoBundle 'benmills/vimux'
-NeoBundle 'wakatime/vim-wakatime'
-NeoBundle 'farseer90718/vim-taskwarrior'
+" NeoBundle 'wakatime/vim-wakatime'
+" NeoBundle 'farseer90718/vim-taskwarrior'
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'Thinca/vim-ref'
 NeoBundle 'Shougo/vimproc.vim', {'build': {'mac': 'make -f make_mac.mak', 'linux': 'make', 'unix': 'gmake'}}
@@ -55,7 +55,14 @@ NeoBundle 'jimenezrick/vimerl'
 NeoBundle 'elixir-lang/vim-elixir'
 NeoBundle 'spiegela/vimix'
 NeoBundle 'sanmiguel/helpex.vim'
+NeoBundle 'wookiehangover/jshint.vim'
+NeoBundle 'lambdatoast/elm.vim'
 " NeoBundle 'sanmiguel/helpex.vim'
+
+" tmux integration
+NeoBundle 'tmux-plugins/vim-tmux-focus-events'
+NeoBundle 'tmux-plugins/vim-tmux'
+NeoBundle 'edkolev/tmuxline.vim'
 
 " Snippets management
 NeoBundle "MarcWeber/vim-addon-mw-utils.git"
@@ -409,6 +416,7 @@ let g:snips_author = 'Lenz Gschendtner (springtimesoft LTD)'
 " airline settings
 "
 let g:airline#extensions#tabline#enabled = 1
+let g:airline_section_z = airline#section#create(['%{ObsessionStatus(''♺'', '''')}', 'windowswap', '%3p%% ', 'linenr', ':%3v '])
 
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
