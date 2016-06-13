@@ -48,9 +48,20 @@ let mapleader = ','
 set noshowmode
 set tabstop=4
 set foldmethod=marker
+
+
 " }}}
 
 " Things run on save {{{
+" format the autoformatter
+let g:autoformat_autoindent = 0
+let g:autoformat_retab = 0
+let g:autoformat_remove_trailing_spaces = 0
+
+let g:formatdef_my_custom_perl = '"perltidy -q -st -se -i=4 -ci=4 -pt=2 -otr -sot -sct -nsfs -noll -nola"'
+let g:formatters_perl = ['my_custom_perl']
+
+" run the autoformatter first, then neomake
 au BufWrite * :Autoformat
 autocmd! BufWritePost * Neomake
 " }}}
