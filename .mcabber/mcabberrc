@@ -1,3 +1,4 @@
+# most of this is from https://gist.github.com/dep/5670753 - thanks
 # server
 set jid = XXXXXXXXXXX@chat.hipchat.com
 set nickname = lenz
@@ -62,3 +63,52 @@ set color_bgrostersel  = 235
 set color_rostersel    = 166
 set color_rosterselmsg = 136
 set color_rosternewmsg = 136
+
+# Aliases
+alias me = say /me
+alias online   = status online
+alias away     = status away
+alias dnd      = status dnd
+alias notavail = status notavail
+alias rs = roster search
+
+# Events
+set events_command = ~/.mcabber/eventcmd
+set events_ignore_active_window = 0
+set event_log_files = 1
+set event_log_dir = ~/.mcabber/event_files
+set eventcmd_use_nickname = 0
+set url_regex = "(((https?|ftps?|nntp)://)|www[.][-a-z0-9.]+|(mailto:|news:))(%[0-9A-F]{2}|[-_.!~*';/?:@&=+$,#[:alnum:]])+"
+module load urlregex
+
+# Key bindings
+# Ctrl-q (17), alt-n bound to /roster unread_next
+bind 17 = roster unread_next
+bind M110 = roster unread_next
+# F5 (269) bound to /roster toggle_offline  (centericq-like, IIRC)
+bind 269 = roster toggle_offline
+# Ctrl-Up/Ctrl-Down bound to /buffer up/down  (like Ctrl-p/Ctrl-n)
+bind 2 = buffer up
+bind 6 = buffer down
+# PgUp/Down
+bind 339 = buffer up
+bind 338 = buffer down
+# ALT-[/] to nav the roster
+bind M91 = roster up
+bind M93 = roster down
+# ctrl-z
+bind 26 = roster unread_next
+# alt-del
+bind M127 = iline word_bdel
+#alt-/
+bind M47 = roster toggle
+#alt-up
+bind M259 = roster top
+#alt-down
+bind M258 = roster bottom
+bind M122 = roster alternate
+#alt-shift-G
+bind M71 = roster search gauntlet
+bind M85 = roster search ui
+# Alt-m to switch to/from multi-line mode
+bind M109 = msay toggle
