@@ -10,11 +10,13 @@ MORE=-nce
 export MORE
 BLOCKSIZE=M
 export BLOCKSIZE
+HOMEBREW_GITHUB_API_TOKEN=863bc2b5217e761c88bafb41a432dd036ab2f7b7
+export HOMEBREW_GITHUB_API_TOKEN
 
 #ENV=$HOME/.bashrc
 #export ENV
 
-EDITOR=vim
+EDITOR=nvim
 export EDITOR
 
 LSCOLORS='bxfxdxcxBxahahBxBxbxbx'
@@ -55,7 +57,7 @@ function strip_diff_leading_symbols () {
 
 ###################
 
-
+alias vim=nvim
 alias l='ls -loBaFT'
 alias ls='ls -Ga'
 alias rm='rm -i'
@@ -78,7 +80,7 @@ fi
 if [ ! -f ${HOME}/.gpg-agent-info ]; then
     # GPG_TTY=$(tty)
     # export GPG_TTY
-    gpg-agent --daemon --enable-ssh-support --write-env-file "${HOME}/.gpg-agent-info"
+    gpg-agent --daemon --write-env-file "${HOME}/.gpg-agent-info"
 fi
 if [ -f "${HOME}/.gpg-agent-info" ]; then
     . "${HOME}/.gpg-agent-info"
@@ -110,8 +112,8 @@ if [ -f `which brew` ]; then
 
 fi
 
-if [ -d "/Library/Java/JavaVirtualMachines/1.6.0_45-b06-451.jdk" ]; then
-    export JAVA_HOME="/Library/Java/JavaVirtualMachines/1.6.0_45-b06-451.jdk/Contents/Home/"
+if [ -d "/Library/Java/JavaVirtualMachines/jdk1.8.0_72.jdk" ]; then
+    export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.8.0_72.jdk/Contents/Home/"
 fi
 
 if [ -f `which tmuxinator` ]; then
@@ -127,6 +129,10 @@ fi
 #         rvm use ruby-1.9.3-p547
 #     fi
 # fi
+
+if [ -f `which vagrant` ]; then
+    export VAGRANT_HOME=/Volumes/exobrain/vagrant
+fi
 
 if which plenv > /dev/null; then eval "$(plenv init -)"; fi
 

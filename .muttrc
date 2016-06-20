@@ -38,7 +38,7 @@ set pager_stop          # Am Ende der Mail nicht zur naechsten springen
 set nomark_old
 
 # editor config
-set editor="vim -c 'set spell spelllang=de,en' +/^$ ++1"
+set editor="nvim -c 'set spell spelllang=de,en' +/^$ ++1"
 set edit_hdrs           # let me edit the message headers
 set quote_regexp="^> "  # Das ist _der_ quote Regex ...!!
 #set record=+sent       # save a copyself in 'sent' -> handled by notmuch
