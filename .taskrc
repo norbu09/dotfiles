@@ -25,7 +25,7 @@ data.location=~/.task
 #include /usr/local/Cellar/task/2.4.2/share/doc/task/rc/dark-yellow-green.theme
 #include /usr/local/Cellar/task/2.4.2/share/doc/task/rc/dark-gray-256.theme
 #include /usr/local/Cellar/task/2.4.2/share/doc/task/rc/dark-gray-blue-256.theme
-#include /usr/local/Cellar/task/2.4.2/share/doc/task/rc/solarized-dark-256.theme
+include /usr/local/Cellar/task/2.4.2/share/doc/task/rc/solarized-dark-256.theme
 #include /usr/local/Cellar/task/2.4.2/share/doc/task/rc/solarized-light-256.theme
 #include /usr/local/Cellar/task/2.4.2/share/doc/task/rc/no-color.theme
 
@@ -37,3 +37,10 @@ context.ssft=+ssft
 context.work=-priv +iwmn or +ssft
 
 alias.attach=execute ~/bin/attach
+
+# taskd.certificate=~/.task/inthe.am/private.certificate.pem
+# taskd.key=~/.task/inthe.am/private.key.pem
+# taskd.ca=~/.task/inthe.am/ca.cert.pem
+# taskd.server=taskwarrior.inthe.am:53589
+# taskd.credentials=inthe_am/norbu09/c19a061a-213f-41b6-9956-d5998af53083
+# taskd.trust=ignore hostname

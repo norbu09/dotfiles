@@ -21,7 +21,7 @@ call dein#add('tpope/vim-obsession')
 call dein#add('vim-airline/vim-airline')
 call dein#add('vim-airline/vim-airline-themes')
 call dein#add('edkolev/tmuxline.vim')
-call dein#add('jnurmine/Zenburn')
+call dein#add('altercation/vim-colors-solarized')
 call dein#add('tomtom/tcomment_vim')
 call dein#add('tpope/vim-fugitive')
 call dein#add('tpope/vim-repeat')
@@ -61,6 +61,9 @@ let g:autoformat_remove_trailing_spaces = 0
 let g:formatdef_my_custom_perl = '"perltidy -q -st -se -i=4 -ci=4 -pt=2 -otr -sot -sct -nsfs -noll -nola"'
 let g:formatters_perl = ['my_custom_perl']
 
+" define neomake overrides
+let g:neomake_perl_enabled_makers = ['perl']
+
 " run the autoformatter first, then neomake
 au BufWrite * :Autoformat
 autocmd! BufWritePost * Neomake
@@ -84,11 +87,13 @@ endfunction
 nmap \p :call SwitchPaste() <CR>
 imap \p <C-O>:call SwitchPaste() <CR>
 nmap \\ :TComment <CR>
+map <esc> :noh<cr>
+
 " }}}
 
 " Theme {{{
 syntax on
-colorscheme zenburn
+colorscheme solarized
 set background=dark
 " set background=light
 " no need to fold things in markdown all the time

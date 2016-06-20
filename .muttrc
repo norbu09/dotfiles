@@ -68,7 +68,8 @@ set mailcap_path    = ~/.mutt/mailcap
 ## my notmuch definition
 source ~/.mutt/notmuch
 ## my colour definition
-source ~/.mutt/colours.zenburn
+#source ~/.mutt/colours.zenburn
+source ~/.mutt/colors-solarized-dark-256
 ## account definitions
 source ~/.mutt/accounts
 ## mailbox definitions
