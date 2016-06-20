@@ -12,22 +12,27 @@ endif
 set runtimepath+=~/.config/nvim/repos/github.com/Shougo/dein.vim/
 call dein#begin(expand('~/.config/nvim'))
 
+" general behaviour
 call dein#add('Shougo/dein.vim')
+call dein#add('Shougo/deoplete.nvim')
+call dein#add('tpope/vim-fugitive')
+call dein#add('tpope/vim-repeat')
+call dein#add('tpope/vim-surround')
+call dein#add('tpope/vim-obsession')
+call dein#add('Shougo/unite.vim')
+call dein#add('Chiel92/vim-autoformat')
+
+" languge dependent things
 call dein#add('sheerun/vim-polyglot')
 call dein#add('benekastah/neomake')
-call dein#add('Shougo/deoplete.nvim')
+call dein#add('tomtom/tcomment_vim')
 call dein#add('slashmili/alchemist.vim')
-call dein#add('tpope/vim-obsession')
+
+" style
 call dein#add('vim-airline/vim-airline')
 call dein#add('vim-airline/vim-airline-themes')
 call dein#add('edkolev/tmuxline.vim')
 call dein#add('altercation/vim-colors-solarized')
-call dein#add('tomtom/tcomment_vim')
-call dein#add('tpope/vim-fugitive')
-call dein#add('tpope/vim-repeat')
-call dein#add('tpope/vim-surround')
-call dein#add('Shougo/unite.vim')
-call dein#add('Chiel92/vim-autoformat')
 
 
 if dein#check_install()
@@ -115,7 +120,7 @@ let g:airline#extensions#tmuxline#enabled = 1
 let g:airline#extensions#tabline#show_tab_nr = 0
 
 let g:airline_section_z = airline#section#create(['%{ObsessionStatus(''♺'', '''')}', 'windowswap', '%3p%% ', 'linenr', ':%3v '])
-let g:airline_theme='understated'
+let g:airline_theme='solarized dark'
 
 if !exists('g:airline_symbols')
 		let g:airline_symbols = {}
