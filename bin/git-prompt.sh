@@ -1,0 +1,1 @@
+/usr/local/share/git-core/contrib/completion/git-prompt.sh
