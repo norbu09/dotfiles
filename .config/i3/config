@@ -2,7 +2,7 @@
 set $mod Mod1
 
 # font
-font pango: System San Francisco Display 12
+font pango: System San Francisco Display 10
 
 # thin borders
 hide_edge_borders both
