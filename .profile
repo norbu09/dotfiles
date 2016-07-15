@@ -73,23 +73,27 @@ GRC=`which grc`
 HISTIGNORE='&:l: *'; export HISTIGNORE
 
 
-if [ -f `which todo.sh` ]; then
+if `which -s todo.sh`; then
     alias t='todo.sh'
 fi
 
-if [ ! -f ${HOME}/.gpg-agent-info ]; then
-    # GPG_TTY=$(tty)
-    # export GPG_TTY
-    gpg-agent --daemon --write-env-file "${HOME}/.gpg-agent-info"
-fi
-if [ -f "${HOME}/.gpg-agent-info" ]; then
-    . "${HOME}/.gpg-agent-info"
-    export GPG_AGENT_INFO
-    export SSH_AUTH_SOCK
+# if [ ! -f ${HOME}/.gpg-agent-info ]; then
+#     # GPG_TTY=$(tty)
+#     # export GPG_TTY
+#     gpg-agent --daemon --write-env-file "${HOME}/.gpg-agent-info"
+# fi
+# if [ -f "${HOME}/.gpg-agent-info" ]; then
+#     . "${HOME}/.gpg-agent-info"
+#     export GPG_AGENT_INFO
+#     export SSH_AUTH_SOCK
+# fi
+# start GPG agent in case it is not running already
+if [ ! -e ${HOME}/.gnupg/S.gpg-agent ]; then
+	gpg-agent --daemon
 fi
 
-if [ -f `which brew` ]; then
-    # echo "Setting up Homebrew ..."
+if `which -s brew`; then
+    echo "Setting up Homebrew ..."
     if [ -f `brew --prefix git`/etc/bash_completion.d/git-completion.bash ]; then
         source `brew --prefix git`/etc/bash_completion.d/git-completion.bash
     fi
@@ -116,7 +120,7 @@ if [ -d "/Library/Java/JavaVirtualMachines/jdk1.8.0_72.jdk" ]; then
     export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.8.0_72.jdk/Contents/Home/"
 fi
 
-if [ -f `which tmuxinator` ]; then
+if `which -s tmuxinator`; then
     if [ -f ~/.bin/tmuxinator.bash ]; then
         echo "Setting up tmuxinator ..."
         source ~/.bin/tmuxinator.bash
@@ -130,12 +134,15 @@ fi
 #     fi
 # fi
 
-if [ -f `which vagrant` ]; then
+if `which -s vagrant`; then
     export VAGRANT_HOME=/Volumes/exobrain/vagrant
 fi
 
-if which plenv > /dev/null; then eval "$(plenv init -)"; fi
+if `which -s plenv`; then 
+		eval "$(plenv init -)"
+fi
 
+source ~/bin/git-prompt.sh
 GIT_PS1=`__git_ps1 2>/dev/null`
 if [ $? -eq 0 ]; then
     GIT_PS1_SHOWDIRTYSTATE=1
@@ -149,4 +156,6 @@ export PS1
 export DISABLE_AUTO_TITLE=true
 tset
 
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+if `which -s rvm`; then
+	export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+fi
