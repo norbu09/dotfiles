@@ -92,6 +92,11 @@ if [ ! -e ${HOME}/.gnupg/S.gpg-agent ]; then
 	gpg-agent --daemon
 fi
 
+# bash completion on FreeBSD
+[[ $PS1 && -f /usr/local/share/bash-completion/bash_completion.sh ]] && \
+		source /usr/local/share/bash-completion/bash_completion.sh
+
+
 if `which -s brew`; then
     echo "Setting up Homebrew ..."
     if [ -f `brew --prefix git`/etc/bash_completion.d/git-completion.bash ]; then
