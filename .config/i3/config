@@ -178,7 +178,7 @@ bindsym Print exec screenshot
 bindsym $mod+d exec rofi -show run -lines 3 -eh 2 -width 100 -padding 100 -opacity "85" -bw 0 -bc "$bg-color" -bg "$bg-color" -fg "$text-color" -hlbg "$bg-color" -hlfg "#9575cd" -font "System San Francisco Display 18"
 
 # startup
-# exec_always --no-startup-id feh --bg-scale /usr/home/lenz/.wallpaper.jpg
+exec_always --no-startup-id feh --bg-scale /usr/home/lenz/.config/i3/skull.jpg
 # exec_always --no-startup-id xrandr --output HDMI-0 --off --output DVI-I-1 --off --output DVI-I-0 --off --output DVI-I-3 --mode 1920x1080 --pos 0x0 --rotate normal --output DVI-I-2 --mode 1920x1080 --pos 1920x0 --rotate normal
 # exec --no-startup-id spotify
 # exec --no-startup-id skype
