@@ -29,12 +29,12 @@ URxvt.lineSpace:            0
 ! Fonts
 URxvt.allow_bold:           false
 /* URxvt.font:                 -*-terminus-medium-r-normal-*-12-120-72-72-c-60-iso8859-1 */
-URxvt*font: 				xft:Monospace:pixelsize=14,\
-						    xft:FontAwesome:pixelsize=14:style=regular,\
-						    xft:Unifont:pixelsixe=14
-URxvt*boldFont: 			xft:Monospace:pixelsize=14,\
-						    xft:FontAwesome:pixelsize=14:style=regular,\
-							xft:Unifont:pixelsixe=14
+URxvt*font: 				xft:Monospace:pixelsize=12,\
+						    xft:FontAwesome:pixelsize=12:style=regular,\
+						    xft:Unifont:pixelsixe=12
+URxvt*boldFont: 			xft:Monospace:pixelsize=12,\
+						    xft:FontAwesome:pixelsize=12:style=regular,\
+							xft:Unifont:pixelsixe=12
 
 ! Fix font space
 URxvt*letterSpace: -1
