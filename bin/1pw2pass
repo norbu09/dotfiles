@@ -1,0 +1,66 @@
+#!/usr/bin/env perl
+
+use Text::CSV;
+use Modern::Perl;
+use Data::Dumper;
+use Expect;
+use Getopt::Long;
+
+my $file;
+my $prefix;
+my $verbose;
+GetOptions(
+    "prefix|p=s" => \$prefix,
+    "file|f=s"   => \$file,
+    "verbose|v"  => \$verbose
+) or die("Error in command line arguments\n");
+
+die "Usage: $0 -f [1Password CSV] -p [prefix]\n" unless $file;
+
+my @rows;
+my $csv = Text::CSV->new({
+        binary              => 1,
+        allow_whitespace    => 1,
+        blank_is_undef      => 1,
+        empty_is_undef      => 1,
+        allow_loose_quotes  => 1,
+        allow_loose_escapes => 1
+    })    # should set binary attribute.
+    or die "Cannot use CSV: " . Text::CSV->error_diag();
+
+open my $fh, "<:encoding(utf8)", $file or die "test.csv: $!";
+$csv->column_names($csv->getline($fh));
+while (my $row = $csv->getline_hr($fh)) {
+
+    $row->{Password} or next;    # no password, no interest
+    $row->{Username} or next;    # no username, no interest either
+    if ($row->{Title}) {
+        $row->{Title} =~ s/^(.*)\s*\(([^)]+)\)$/$2\/$1/;
+        $row->{Title} =~ s/^(.*)\s+([^\s]+)$/$2\/$1/;
+        $row->{Title} =~ s/\s+//g;
+        $row->{Title} =~ s/\W$//g;
+        $row->{Title} = ucfirst($row->{Title});
+        $row->{Title} = join("/", ucfirst($prefix), $row->{Title}) if $prefix;
+    }
+    push @rows, $row;
+}
+$csv->eof or $csv->error_diag();
+close $fh;
+
+foreach my $row (@rows) {
+    say "importing " . $row->{Title} . ": " . $row->{Username}
+        if $verbose;
+
+    my $exp = new Expect;
+    $exp->raw_pty(0);
+    my $command =
+        "/usr/local/bin/pass insert -m -f '$row->{Title}' > /dev/null";
+    $exp->spawn($command) or die "Cannot spawn pass $!\n";
+    $exp->send($row->{Password} . "\n");
+    $exp->send("login:" . $row->{Username} . "\n");
+    $exp->send("url:" . $row->{URL} . "\n") if $row->{URL};
+    $exp->send($row->{Notes} . "\n") if $row->{Notes};
+    $exp->send("\cD");
+    $exp->soft_close();
+    say "done";
+}
