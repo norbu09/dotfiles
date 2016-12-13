@@ -1,0 +1,89 @@
+general {
+   output_format = "i3bar"
+   colors = true
+   interval = 5
+}
+
+order += "path_exists VPN"
+order += "wireless wlan0"
+order += "ethernet eth0"
+order += "load"
+order += "tztime local"
+order += "tztime utc"
+order += "tztime wellington"
+order += "tztime berlin"
+order += "tztime vancouver"
+order += "volume master"
+order += "battery 0"
+
+wireless wlan0 {
+        format_up = " %essid - %ip"
+        format_down = " down"
+}
+
+ethernet em0 {
+   # if you use %speed, i3status requires the cap_net_admin capability
+   format_up = " %ip (%speed)"
+   format_down = " down"
+}
+
+battery 0 {
+   format = "%status %percentage (~%remaining)"
+   format_down = "No battery"
+   status_chr = " "
+   status_bat = "⚡ "
+   status_full = "☻ "
+   path = "/sys/class/power_supply/BAT%d/uevent"
+   low_threshold = 10
+}
+
+run_watch DHCP {
+   pidfile = "/var/run/dhclient*.pid"
+}
+
+run_watch VPNC {
+   # file containing the PID of a vpnc process
+   pidfile = "/var/run/vpnc/pid"
+}
+
+path_exists VPN {
+   # path exists when a VPN tunnel launched by nmcli/nm-applet is active
+   path = "/proc/sys/net/ipv4/conf/tun0"
+}
+
+tztime local {
+   format = "%Y-%m-%d"
+}
+
+tztime berlin {
+   format = "BER %H:%M"
+   timezone = "Europe/Berlin"
+}
+
+tztime utc {
+   format = "UTC %H:%M"
+   timezone = "UTC"
+}
+ 
+tztime wellington {
+   format = "WLG %H:%M"
+   timezone = "Pacific/Auckland"
+}
+ 
+tztime vancouver {
+   format = "YVR %H:%M"
+   timezone = "America/Vancouver"
+}
+
+load {
+   format = "%5min"
+}
+
+volume master {
+   format = " %volume"
+   format_muted = " muted (%volume)"
+   device = "default"
+   mixer = "Master"
+   mixer_idx = 0
+}
+
