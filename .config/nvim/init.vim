@@ -33,6 +33,10 @@ call dein#add('vim-airline/vim-airline')
 call dein#add('vim-airline/vim-airline-themes')
 call dein#add('edkolev/tmuxline.vim')
 call dein#add('altercation/vim-colors-solarized')
+call dein#add('dracula/vim')
+call dein#add('sickill/vim-monokai')
+call dein#add('jpo/vim-railscasts-theme')
+call dein#add('NLKNguyen/papercolor-theme')
 
 
 if dein#check_install()
@@ -98,9 +102,9 @@ map <esc> :noh<cr>
 
 " Theme {{{
 syntax on
-colorscheme solarized
-set background=dark
 " set background=light
+set background=dark
+colorscheme PaperColor
 " no need to fold things in markdown all the time
 let g:vim_markdown_folding_disabled = 1
 " turn on spelling for markdown files
@@ -120,7 +124,7 @@ let g:airline#extensions#tmuxline#enabled = 1
 let g:airline#extensions#tabline#show_tab_nr = 0
 
 let g:airline_section_z = airline#section#create(['%{ObsessionStatus(''♺'', '''')}', 'windowswap', '%3p%% ', 'linenr', ':%3v '])
-let g:airline_theme='solarized dark'
+let g:airline_theme='papercolor'
 
 if !exists('g:airline_symbols')
 		let g:airline_symbols = {}

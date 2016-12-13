@@ -132,6 +132,10 @@ if `which -s tmuxinator`; then
     fi
 fi
 
+# if `which -s tmuxp`; then 
+# 		eval "$(_TMUXP_COMPLETE=source tmuxp)"
+# fi
+
 # if [ -f `which rvm` ]; then
 #     if [ -f ~/.rvm/scripts/rvm ]; then
 #         echo "Setting up rvm ..."
