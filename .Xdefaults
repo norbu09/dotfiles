@@ -15,6 +15,7 @@ Xft.hintstyle:              hintslight
 ! http://pod.tst.eu/http://cvs.schmorp.de/rxvt-unicode/doc/rxvt.1.pod
 !-------------------------------------------------------------------------------
 
+URxvt*termName:             screen-256color
 URxvt.depth:                32
 URxvt.geometry:             90x30
 URxvt.transparent:          false
@@ -23,30 +24,36 @@ URxvt.fading:               0
 ! URxvt.visualBell:           true
 URxvt.loginShell:           true
 URxvt.saveLines:            50
-URxvt.internalBorder:       3
+URxvt.internalBorder:       0
 URxvt.lineSpace:            0
 
 ! Fonts
-URxvt.allow_bold:           false
-/* URxvt.font:                 -*-terminus-medium-r-normal-*-12-120-72-72-c-60-iso8859-1 */
-URxvt*font: 				xft:Monospace:pixelsize=12,\
-						    xft:FontAwesome:pixelsize=12:style=regular,\
-						    xft:Unifont:pixelsixe=12
-URxvt*boldFont: 			xft:Monospace:pixelsize=12,\
-						    xft:FontAwesome:pixelsize=12:style=regular,\
-							xft:Unifont:pixelsixe=12
+URxvt.allow_bold:           true
+URxvt*font:                 xft:InputMonoCompressed Light:style=Medium,Regular:size=11,\
+                            xft:DroidSansMonoForPowerline Nerd Font:style=Medium:size=12,\
+                            xft:Unifont:style=Medium:pixelsixe=11
+URxvt*boldFont:             xft:InputMonoCompressed Medium:style=Medium,Regular:size=11,\
+                            xft:DroidSansMonoForPowerline Nerd Font:style=Medium:size=12:bold,\
+                            xft:Unifont:style=Medium:pixelsixe=11:bold
 
-! Fix font space
-URxvt*letterSpace: -1
+! Fix font space (breaks fallback fonts)
+!URxvt*letterSpace: -1
 
 ! Scrollbar
 URxvt.scrollStyle:          rxvt
 URxvt.scrollBar:            false
 
 ! Perl extensions
-URxvt.perl-ext-common:      default,matcher
+URxvt.perl-lib:             /usr/local/lib/urxvt/perl
+URxvt.perl-ext-common:      default,clipboard,url-select,keyboard-select
 URxvt.matcher.button:       1
-URxvt.urlLauncher:          firefox
+URxvt.url-select.launcher:  firefox
+URxvt.url-select.underline: true
+URxvt.matcher.rend.0:       Uline Bold fg5
+URxvt.keysym.M-u:           perl:url-select:select_next
+URxvt.keysym.M-Escape:      perl:keyboard-select:activate
+URxvt.keysym.M-s:           perl:keyboard-select:search
+
 
 ! Cursor
 URxvt.cursorBlink:          true
@@ -55,6 +62,85 @@ URxvt.cursorUnderline:      false
 
 ! Pointer
 URxvt.pointerBlank:         true
+
+URxvt.scrollBar: false
+URxvt.scrollBar_right: true
+URxvt.scrollColor: #FD971F
+URxvt.troughColor: #000000
+
+! URxvt.cursorBlink: true
+! URxvt.cursorColor: #FD971F
+
+URxvt.intensityStyles: false
+
+! ! Replace DarkBlue + Blue with OrangeRed + Orange
+! URxvt.color4: #FF4500
+! URxvt.color12:  #FD971F
+!
+! !!!! Molokai Attempt (some colors tweaked for saturation)
+! URxvt.background:   [95]#080800
+! URxvt.foreground:   #F8F8F0
+! !! Black + DarkGrey
+! URxvt.color0:       #080800
+! URxvt.color8:       #272822
+! !! Red
+! URxvt.color9:       #FF0000
+! !! Green
+! URxvt.color10:      #AAFF00
+! !! DarkMagenta + Magenta
+! URxvt.color5:       #CC004A
+! URxvt.color13:      #F9005A
+! !!DarkCyan + Cyan
+! URxvt.color6:      #00A1BF
+! URxvt.color14:      #00C9EF
+! !! White
+! URxvt.color15: #F8F8F0
+!
+
+
+! ! plastic-toys
+!URxvt*.foreground:   #ebebeb
+!URxvt*.background:   #222223
+!URxvt*.cursorColor:  #ebebeb
+!URxvt*.color0:       #222222
+!URxvt*.color8:       #111111
+!URxvt*.color1:       #eb0000
+!URxvt*.color9:       #ab0000
+!URxvt*.color2:       #aaeb00
+!URxvt*.color10:      #66aa00
+!URxvt*.color3:       #eebb00
+!URxvt*.color11:      #aa7700
+!URxvt*.color4:       #00aaeb
+!URxvt*.color12:      #0066aa
+!URxvt*.color5:       #ebaaeb
+!URxvt*.color13:      #aa66aa
+!URxvt*.color6:       #00ebeb
+!URxvt*.color14:      #00aaaa
+!URxvt*.color7:       #ebebeb
+!URxvt*.color15:      #fafafa
+
+! default
+! urxvt*foreground: white
+! urxvt*background: black
+!
+! *color0:  #2E3436
+! *color1:  #a40000
+! *color2:  #4E9A06
+! *color3:  #C4A000
+! *color4:  #3465A4
+! *color5:  #75507B
+! *color6:  #ce5c00
+! *color7:  #babdb9
+! *color8:  #555753
+! *color9:  #EF2929
+! *color10: #8AE234
+! *color11: #FCE94F
+! *color12: #729FCF
+! *color13: #AD7FA8
+! *color14: #fcaf3e
+! *color15: #EEEEEC
+
+
 
 !!Source http://github.com/altercation/solarized
 
@@ -97,3 +183,39 @@ URxvt.pointerBlank:         true
 !! white dark/light
 *color7: #eee8d5
 *color15: #fdf6e3
+!
+! Light mode: https://github.com/thomasf/dotfiles-thomasf-xmonad
+
+Xmessage*background:          #fdf6e3
+Xmessage*foreground:          #657b83
+
+!URxvt*colorUL:                #859900
+!URxvt*colorBD:                #268bd2
+!URxvt*color1:                 #dc322f
+!URxvt*color9:                 #cb4b16
+!URxvt*color2:                 #859900
+!URxvt*color3:                 #b58900
+!URxvt*color4:                 #268bd2
+!URxvt*color5:                 #d33682
+!URxvt*color13:                #6c71c4
+!URxvt*color6:                 #2aa198
+!
+!URxvt*background:             #fdf6e3
+!URxvt*foreground:             #657b83
+!URxvt*fadeColor:              #fdf6e3
+!URxvt*cursorColor:            #586e75
+!URxvt*pointerColorBackground: #93a1a1
+!URxvt*pointerColorForeground: #586e75
+!URxvt*scrollColor:            #93a1a1
+!URxvt*borderColor:            #fdf6e3
+!URxvt*color0:                 #073642
+!URxvt*color8:                 #657b83
+!URxvt*color10:                #93a1a1
+!URxvt*color11:                #839496
+!URxvt*color12:                #657b83
+!URxvt*color14:                #586e75
+!URxvt*color7:                 #839496
+!URxvt*color15:                #002b36
+
+
+
