@@ -1,0 +1,122 @@
+LV_BRANCH='release-1.3/neovim-0.9' bash <(curl -s https://raw.githubusercontent.com/LunarVim/LunarVim/release-1.3/neovim-0.9/utils/installer/install.sh)
+"\n$env.ASDF_NU_DIR = '/opt/asdf-vm/'\n source /opt/asdf-vm/asdf.nu" | save --append $nu.config-path
+asdf
+ls /opt/
+asdf
+"\n$env.ASDF_NU_DIR = '/opt/asdf-vm/'\n source /opt/asdf-vm/asdf.nu" | save --append $nu.config-path
+asdf
+sudo rm /usr/local/bin/asdf
+pwd
+ls
+vi .config/nushell/config.nu
+$env
+vi .config/nushell/config.nu
+.local/bin/lvim
+.local/bin/lvim .config/nushell/config.nu
+.local/bin/lvim .config/nushell/env.nu
+lvim 
+asdf
+asdf install erlang latest
+asdf plugin list
+asdf plugin update --all
+asdf plugin add erlang
+asdf plugin add elixir
+asdf plugin add node
+asdf plugin add nodejs
+asdf install erlang latest
+lvim
+asdf install elixir latest
+asdf install nodejs latest
+ls
+cd code/
+ls
+cd elitedomains/
+ls
+cd super_perforator/
+ls
+lvim
+lvim lib/super_perforator.ex
+mix deps.get
+asdf install elixir 1.14.4-otp-25
+mix deps.get
+asdf install erlang 25.3
+mix deps.get
+ls -lisa
+ls 
+lvim config/dev.exs
+iex -S mix
+sudo chown -R lenz /data/
+sudo chown -R lenz code/elitedomains/super_perforator/
+iex -S mix
+ls -lisa code/elitedomains/super_perforator/
+ls -a code/elitedomains/super_perforator/
+ls -l code/elitedomains/super_perforator/
+ls -l code/elitedomains/super_perforator
+ls -l code/elitedomains
+cd
+cd -
+iex -S mix
+cd 
+cd -
+iex -S mix
+mix deps.compile syslog
+rm -rf deps/
+mix deps.clean --alll
+mix deps.clean --all
+rm -r deps/
+heml rm
+help rm
+rm -rf deps/
+cd deps
+ls
+rm -rf syslog/
+cd syslog/
+ls
+ls _build/
+ls _build/prod/
+ls _build/prod/plugins/
+mix deps.get
+cd -
+cd ..
+mix deps.get
+ls
+git status
+git reset HEAD
+mix deps.get
+git status
+git reset --hard HEAD
+git status
+git branch
+mix deps.get
+iex -S mix
+dmesg
+sudo dmesg
+pacman -Ss 1password
+yay -Ss 1password
+yay -S 1password
+fdsafas
+lvim foo
+ps ax
+ps
+cd dotfiles/
+git pull
+git branch --set-upstream-to=origin/main main
+git push -u origin main
+git push origin main
+git commit -m "new beginnings"
+git config --global user.email "mail@norbu09.org"
+git config --global user.name "Lenz"
+git commit -m "new beginnings"
+git push origin main
+ls
+rm dunst/
+cp -r ~/.config/dunst .
+rm i3
+cp -r ~/.config/i3 .
+rm kitty/
+cp -r ~/.config/kitty .
+rm lvim
+cp -r ~/.config/lvim .
+rm nushell
+cp -r ~/.config/nushell .
+rm rofi
