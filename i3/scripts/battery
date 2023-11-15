@@ -1,0 +1,22 @@
+#!/bin/sh
+
+STATE=`sysctl -n hw.acpi.battery.state`
+LEVEL=`sysctl -n hw.acpi.battery.life`
+
+if [ ${STATE} == 1 ]; then
+  if [ ${LEVEL} -lt "75" ]; then
+	if [ ${LEVEL} -lt "50" ]; then
+	  if [ ${LEVEL} -lt "25" ]; then
+		echo "󰂎${LEVEL}%"
+	  else
+		echo "󱊡${LEVEL}%"
+	  fi
+	else
+	  echo "󱊢${LEVEL}%"
+	fi
+  else
+	echo "󱊣${LEVEL}%"
+  fi
+else
+  echo " ${LEVEL}%"
+fi

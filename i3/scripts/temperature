@@ -29,7 +29,7 @@ binmode(STDOUT, ":utf8");
 # default values
 my $t_warn = $ENV{T_WARN} || 70;
 my $t_crit = $ENV{T_CRIT} || 90;
-my $chip = $ENV{SENSOR_CHIP} || "";
+my $chip = $ENV{SENSOR_CHIP} || "hw.acpi.thermal.tz0.temperature";
 my $temperature = -9999;
 my $label = "😀 ";
 
@@ -47,9 +47,9 @@ GetOptions("help|h" => \&help,
            "chip=s" => \$chip);
 
 # Get chip temperature
-open (SENSORS, "sensors -u $chip |") or die;
+open (SENSORS, "sysctl $chip |") or die;
 while (<SENSORS>) {
-    if (/^\s+temp1_input:\s+[\+]*([\-]*\d+\.\d)/) {
+    if (/^\s*$chip:\s+([\-]*\d+\.\d)C/) {
         $temperature = $1;
         last;
     }
