@@ -21,7 +21,7 @@ function get_mute {
 
 # Uses regex to get brightness from xbacklight
 function get_brightness {
-    xbacklight | grep -Po '[0-9]{1,3}' | head -n 1
+    xbacklight -get
 }
 
 # Returns a mute icon, a volume-low icon, or a volume-high icon, depending on the volume
@@ -29,17 +29,17 @@ function get_volume_icon {
     volume=$(get_volume)
     mute=$(get_mute)
     if [ "$volume" -eq 0 ] || [ "$mute" == "yes" ] ; then
-        volume_icon=""
+        volume_icon=" "
     elif [ "$volume" -lt 50 ]; then
-        volume_icon=""
+        volume_icon=" "
     else
-        volume_icon=""
+        volume_icon=" "
     fi
 }
 
 # Always returns the same icon - I couldn't get the brightness-low icon to work with fontawesome
 function get_brightness_icon {
-    brightness_icon=""
+    brightness_icon=" "
 }
 
 # Displays a volume notification using dunstify

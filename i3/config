@@ -288,7 +288,6 @@ bindsym $mod+p exec /usr/local/bin/switch-audio-port
 
 ## App shortcuts
 bindsym $mod+w exec /usr/bin/firefox
-bindsym $mod+n exec /usr/bin/thunar
 bindsym Print exec scrot ~/%Y-%m-%d-%T-screenshot.png && notify-send "Screenshot saved to ~/$(date +"%Y-%m-%d-%T")-screenshot.png"
 
 # Power Profiles menu switcher (rofi)
@@ -321,18 +320,10 @@ set $ws10 "10"
 #workspace $ws5 output HDMI-0
 
 # bind program to workspace and focus to them on startup:
-assign [class="Xfce4-terminal"] $ws1
 assign [class="(?i)firefox"] $ws2
-assign [class="Thunar"] $ws3
-assign [class="thunderbird"] $ws4
-assign [class="TelegramDesktop"] $ws5
 
 # automatic set focus new window if it opens on another workspace than the current:
-for_window [class=Xfce4-terminal] focus
 for_window [class=(?i)firefox] focus
-for_window [class=Thunar] focus
-for_window [class=Thunderbird] focus
-for_window [class=TelegramDesktop] focus
 
 ##############
 # compositor #
@@ -396,7 +387,7 @@ exec --no-startup-id ~/.screenlayout/monitor.sh
 
 # set wallpaper
 # exec --no-startup-id sleep 2 && nitrogen --restore
-exec --no-startup-id sleep 1 && feh --bg-fill /usr/share/endeavouros/backgrounds/endeavouros-wallpaper.png
+exec --no-startup-id sleep 1 && feh --bg-fill ~/.config/background.jpg
 
 # set powersavings for display:
 exec --no-startup-id xset s 480 dpms 600 600 600
@@ -430,8 +421,12 @@ exec --no-startup-id /usr/bin/dunst
 
 # Autostart apps as you like
 #exec --no-startup-id sleep 2 && xfce4-terminal
-exec --no-startup-id sleep 7 && firefox https://github.com/endeavouros-team/endeavouros-i3wm-setup/blob/main/force-knowledge.md
+exec --no-startup-id sleep 7 && firefox 
 #exec --no-startup-id sleep 3 && thunar
+
+# eye candy goes here
+exec --no-startup-id redshift-gtk
+
 
 ###############
 # system tray #
@@ -446,7 +441,7 @@ exec --no-startup-id sleep 7 && firefox https://github.com/endeavouros-team/ende
 #exec --no-startup-id nm-applet
 
 # audio applet
-exec --no-startup-id volumeicon
+# exec --no-startup-id volumeicon
 
 # clipman-applet
 #exec --no-startup-id xfce4-clipman
@@ -470,7 +465,7 @@ for_window [class="Pamac-manager"] floating enable
 for_window [window_role="About"] floating enable
 
 # set border of floating window
-for_window [class="urxvt"] border pixel 1
+# for_window [class="urxvt"] border pixel 1
 
 # set size of floating window
 #for_window [window_role="(?i)GtkFileChooserDialog"] resize set 640 480 #to set size of file choose dialog
@@ -591,5 +586,5 @@ bindsym $mod+t exec rofi -show window \
 ## rofi bindings to manage clipboard (install rofi-greenclip from the AUR)
 
 #exec --no-startup-id greenclip daemon>/dev/null
-#bindsym $mod+c exec --no-startup-id rofi -modi "clipboard:greenclip print" -show clipboard \
-#		-config ~/.config/rofi/rofidmenu.rasi
+bindsym $mod+c exec --no-startup-id rofi -modi "clipboard:greenclip print" -show clipboard \
+		-config ~/.config/rofi/rofidmenu.rasi
