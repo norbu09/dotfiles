@@ -69,6 +69,21 @@ if ! command -v stow &>/dev/null; then
     fi
 fi
 
+# Check if a path is already managed by stow (any parent dir is a symlink into our repo)
+is_stow_managed() {
+    local dir="$1"
+    while [ "$dir" != "$HOME" ]; do
+        dir="$(dirname "$dir")"
+        if [ -L "$dir" ]; then
+            local link_target="$(readlink "$dir")"
+            case "$link_target" in
+                */.dotfiles/*|*/dotfiles/*) return 0 ;;
+            esac
+        fi
+    done
+    return 1
+}
+
 # Backup existing conflicting files
 for pkg in i3 kitty polybar picom btop fish dunst rofi nushell redshift; do
     pkg_path="$SCRIPT_DIR/$pkg"
@@ -76,6 +91,9 @@ for pkg in i3 kitty polybar picom btop fish dunst rofi nushell redshift; do
     while IFS= read -r -d '' f; do
         target="$HOME/${f#$SCRIPT_DIR/$pkg/}"
         if [ -e "$target" ] && [ ! -L "$target" ]; then
+            if is_stow_managed "$target"; then
+                continue
+            fi
             echo "  backing up $target → $target.bak"
             mv "$target" "$target.bak"
         fi
