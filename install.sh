@@ -86,7 +86,7 @@ done
 cd "$SCRIPT_DIR"
 for pkg in i3 kitty polybar picom btop fish dunst rofi nushell lvim redshift; do
     [ -d "$pkg" ] || continue
-    stow "$pkg" 2>/dev/null && echo "  stow $pkg: OK" || echo "  stow $pkg: skipped (may already be linked)"
+    stow -t "$HOME" "$pkg" 2>/dev/null && echo "  stow $pkg: OK" || echo "  stow $pkg: skipped (may already be linked)"
 done
 
 # --- Set wallpaper ---
