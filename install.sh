@@ -2,7 +2,7 @@
 set -e
 
 # ──────────────────────────────────────────
-# Worth Hacker Terminal Setup - Installer
+# Hacker Terminal Dotfiles - Installer
 # ──────────────────────────────────────────
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -34,7 +34,8 @@ echo "=== Installing packages... ==="
 if [ "$PM" = "pacman" ]; then
     $INSTALL_CMD \
         i3-wm kitty polybar picom feh fish btop rofi dunst \
-        redshift pamixer xob maim polkit-gnome \
+        redshift playerctl scrot maim xclip pamixer xob \
+        polkit-gnome dex zen-browser-bin \
         ttf-meslo-nerd
 
     if [ -n "$AUR_INSTALL" ]; then
@@ -43,50 +44,58 @@ if [ "$PM" = "pacman" ]; then
 elif [ "$PM" = "apt" ]; then
     $INSTALL_CMD \
         i3 kitty polybar picom feh fish btop rofi dunst \
-        redshift pavucontrol maim policykit-1-gnome \
-        fonts-firacode fonts-hack-ttf
+        redshift playerctl scrot maim xclip pamixer \
+        policykit-1-gnome zen-browser \
+        fonts-firacode
     echo "Note: Install Meslo Nerd Font manually from https://github.com/ryanoasis/nerd-fonts/releases"
 elif [ "$PM" = "dnf" ]; then
     $INSTALL_CMD \
         i3 kitty polybar picom feh fish btop rofi dunst \
-        redshift pamixer maim polkit-gnome \
-        'fontpackages-filesystem' meslo-nerd-fonts
+        redshift playerctl scrot maim xclip pamixer \
+        polkit-gnome zen-browser \
+        meslo-nerd-fonts
 fi
 
-# --- Create config directories ---
-echo "=== Deploying configs... ==="
-mkdir -p ~/.config/i3
-mkdir -p ~/.config/kitty
-mkdir -p ~/.config/polybar
-mkdir -p ~/.config/picom
-mkdir -p ~/.config/btop/themes
-mkdir -p ~/.config/fish
+# --- Deploy with stow ---
+echo "=== Deploying dotfiles with stow... ==="
 
-# --- Copy configs ---
-cp "$SCRIPT_DIR/i3/config" ~/.config/i3/config
-cp "$SCRIPT_DIR/i3/watch-outputs.sh" ~/.config/i3/watch-outputs.sh 2>/dev/null || true
-cp "$SCRIPT_DIR/i3/setup-displays.sh" ~/.config/i3/setup-displays.sh 2>/dev/null || true
-cp "$SCRIPT_DIR/i3/assign-workspaces.sh" ~/.config/i3/assign-workspaces.sh 2>/dev/null || true
-cp "$SCRIPT_DIR/i3/wallpaper.png" ~/.config/i3/wallpaper.png
+if ! command -v stow &>/dev/null; then
+    if [ "$PM" = "pacman" ]; then
+        sudo pacman -S --noconfirm stow
+    elif [ "$PM" = "apt" ]; then
+        sudo apt install -y stow
+    elif [ "$PM" = "dnf" ]; then
+        sudo dnf install -y stow
+    fi
+fi
 
-cp "$SCRIPT_DIR/kitty/kitty.conf" ~/.config/kitty/kitty.conf
+# Backup existing conflicting files
+for pkg in i3 kitty polybar picom btop fish dunst rofi nushell lvim redshift; do
+    pkg_path="$SCRIPT_DIR/$pkg"
+    [ -d "$pkg_path" ] || continue
+    while IFS= read -r -d '' f; do
+        target="$HOME/${f#$SCRIPT_DIR/$pkg/}"
+        if [ -e "$target" ] && [ ! -L "$target" ]; then
+            echo "  backing up $target → $target.bak"
+            mv "$target" "$target.bak"
+        fi
+    done < <(find "$pkg_path" -type f -print0)
+done
 
-cp "$SCRIPT_DIR/polybar/config" ~/.config/polybar/config
-cp "$SCRIPT_DIR/polybar/launch.sh" ~/.config/polybar/launch.sh
-chmod +x ~/.config/polybar/launch.sh
-
-cp "$SCRIPT_DIR/picom/picom.conf" ~/.config/picom/picom.conf
-
-cp "$SCRIPT_DIR/btop/btop.conf" ~/.config/btop/btop.conf
-cp "$SCRIPT_DIR/btop/themes/catppuccin_mocha_transparent.theme" ~/.config/btop/themes/
-
-cp "$SCRIPT_DIR/fish/config.fish" ~/.config/fish/config.fish
+# Stow all packages
+cd "$SCRIPT_DIR"
+for pkg in i3 kitty polybar picom btop fish dunst rofi nushell lvim redshift; do
+    [ -d "$pkg" ] || continue
+    stow "$pkg" 2>/dev/null && echo "  stow $pkg: OK" || echo "  stow $pkg: skipped (may already be linked)"
+done
 
 # --- Set wallpaper ---
 feh --bg-fill ~/.config/i3/wallpaper.png 2>/dev/null || true
 
 echo ""
 echo "=== Done! ==="
-echo "Reload i3 with Mod+Shift+C or log out and back in."
-echo "Open a new kitty terminal to see transparency."
-echo "Launch btop with Mod+B to see the transparent theme."
+echo "Reload i3:  Mod+Shift+C"
+echo "New terminal: kitty (transparency should work)"
+echo "Browser:     Mod+W (zen-browser)"
+echo "Cheatsheet:  F1"
+echo "Power menu:  Mod+Shift+E"

@@ -110,7 +110,7 @@ bindsym $mod+Shift+e exec ~/.config/i3/scripts/powermenu
 bindsym F1 exec ~/.config/i3/scripts/keyhint-2
 
 # quick launch
-bindsym $mod+w exec firefox
+bindsym $mod+w exec zen-browser
 bindsym $mod+Tab exec rofi -show window
 bindsym $mod+Shift+n exec ~/.config/i3/scripts/empty_workspace
 
@@ -167,7 +167,7 @@ exec --no-startup-id "i3-msg 'workspace 1; exec kitty'"
 for_window [title="Calculator"] floating enable
 for_window [title="Timer"] floating enable
 for_window [class="librewolf"] border none
-for_window [class="firefox"] border none
+for_window [class="(?i)zen"] border none
 for_window [class="mpv"] floating enable
 for_window [class="imv"] floating enable
 for_window [class="zenity"] floating enable
