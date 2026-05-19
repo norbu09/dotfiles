@@ -1,79 +1,56 @@
-# Worth Hacker Terminal Setup
+# dotfiles
 
-One-font, no-borders, transparent-terminal "movie hacker" look for i3.
+Stow-managed dotfiles for a transparent "movie hacker" i3 setup.
 
-## What this does
+## What's included
 
-- **Kitty** with 85% opacity — wallpaper visible behind terminals
-- **i3** with zero borders, zero gaps, no titlebars — seamless tiling
-- **Polybar** matching the terminal aesthetic, slightly transparent
-- **Picom** with GLX backend for proper transparency compositing
-- **Btop** with transparent Catppuccin Mocha theme
-- **Fish** with minimal hacker-style prompt
-- **Submarine cable map** wallpaper
-
-## Packages needed
-
-### Arch / CachyOS
-```
-sudo pacman -S --needed \
-  i3-wm kitty polybar picom feh fish btop rofi dunst \
-  redshift pamixer xob maim polkit-gnome \
-  ttf-meslo-nerd
-```
-
-### Debian / Ubuntu
-```
-sudo apt install -y \
-  i3 kitty polybar picom feh fish btop rofi dunst \
-  redshift pavucontrol maim policykit-1-gnome \
-  fonts-firacode fonts-hack-ttf
-```
-Then install Meslo Nerd Font manually from
-https://github.com/ryanoasis/nerd-fonts/releases
-
-### Fedora
-```
-sudo dnf install -y \
-  i3 kitty polybar picom feh fish btop rofi dunst \
-  redshift pamixer maim polkit-gnome \
-  meslo-nerd-fonts
-```
-
-## Quick install
-
-```bash
-chmod +x install.sh && ./install.sh
-```
-
-Or copy individual configs manually:
-
-| Component | Location |
-|-----------|----------|
-| i3        | `~/.config/i3/config` |
-| Kitty     | `~/.config/kitty/kitty.conf` |
-| Polybar   | `~/.config/polybar/config` |
-| Picom     | `~/.config/picom/picom.conf` |
-| Btop      | `~/.config/btop/btop.conf` |
-| Fish      | `~/.config/fish/config.fish` |
-| Wallpaper | `~/.config/i3/wallpaper.png` |
+| Package | What |
+|---------|------|
+| `i3` | Zero borders, zero gaps, Catppuccin Mocha, powermenu, keyhint, media keys |
+| `kitty` | Catppuccin Mocha with 85% background opacity |
+| `polybar` | Matching status bar at the bottom |
+| `picom` | GLX compositor with transparency rules |
+| `btop` | Transparent Catppuccin Mocha theme |
+| `fish` | Minimal hacker-style prompt |
+| `rofi` | App launcher, powermenu, keyhint themes |
+| `dunst` | Notification daemon config |
+| `nushell` | Shell config |
+| `lvim` | LunarVim config |
+| `redshift` | Auto-brightness hooks |
 
 ## Keybindings
 
 | Key | Action |
 |-----|--------|
-| `Mod+Return` | Open terminal |
+| `Mod+Return` | Terminal |
 | `Mod+d` | App launcher (rofi) |
+| `Mod+t` | Window switcher (rofi) |
 | `Mod+b` | Btop (system monitor) |
+| `Mod+w` | Firefox |
 | `Mod+g` | GitUI |
+| `F1` | Keybinding cheat sheet |
 | `Mod+p` | Toggle polybar |
-| `Mod+l` | Lock screen |
-| `Mod+f` | Fullscreen toggle |
-| `Mod+Shift+c` | Reload i3 config |
+| `Mod+Shift+e` | Power menu |
+| `Mod+Shift+p` | Power profiles |
+| `Print` | Screenshot (full) |
+| `Mod+Print` | Screenshot (selection) |
 
-## After install
+## Setup on a new machine
 
-1. Reload i3: `Mod+Shift+C`
-2. Open a new kitty terminal
-3. Launch btop: `Mod+B`
-4. Log out and back in if anything doesn't work
+```bash
+# Clone
+git clone git@github.com:norbu09/dotfiles ~/.dotfiles
+
+# Install packages (Arch)
+sudo pacman -S --needed \
+  i3-wm kitty polybar picom feh fish btop rofi dunst \
+  redshift playerctl scrot pamixer xob maim polkit-gnome \
+  ttf-meslo-nerd
+
+# Deploy
+cd ~/.dotfiles
+stow .
+
+# Reload i3
+i3-msg reload
+```
