@@ -46,9 +46,8 @@ bindsym $mod+f fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
 bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
+bindsym $mod+Shift+w layout tabbed
 bindsym $mod+e layout toggle split
-bindsym $mod+Shift+w sticky toggle
 
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
@@ -217,6 +216,9 @@ bindsym $mod+p exec polybar-msg cmd toggle
 # Power profiles
 bindsym $mod+Shift+p exec ~/.config/i3/scripts/power-profiles
 
+# Lock screen
+bindsym $mod+l exec "sleep 0.1 && i3lock --blur 5"
+
 # Window focus follow mouse
 focus_follows_mouse yes
 
@@ -230,15 +232,6 @@ bindsym XF86AudioLowerVolume exec "pamixer -ud 3 && pamixer --get-volume > /tmp/
 # mute sound
 bindsym XF86AudioMute exec "amixer sset Master toggle | sed -En '/\[on\]/ s/.*\[([0-9]+)%\].*/\1/ p; /\[off\]/ s/.*/0/p' | head -1 > /tmp/xobpipe"
 
-bindsym $mod+Shift+p exec gnome-calculator
-#bindsym $mod+p exec ~/.scripts/dmshot
-
-## This will switch the current layout to the 'us'.
-#bindsym $mod+l exec "setxkbmap -layout us && sleep 0.1 && setxkbmap -option grp:caps_toggle 'us,ru' -option grp_led:caps && sleep 0.1 && i3lock --blur 5"
-
-## This keybind will lock the screen. The lockscreen.
-bindsym $mod+l exec "sleep 0.1 && i3lock --blur 5"
-
 ########################################################################
 ########################################################################
 ####
@@ -246,14 +239,6 @@ bindsym $mod+l exec "sleep 0.1 && i3lock --blur 5"
 ####
 ########################################################################
 ########################################################################
-
-## Here is a language switcher by pressing capslock button,
-## and the capslock functionality available by using shift+capslock.
-## Uncomment to enable 'us' to/from 'ru' switch. change to language(s) you prefer more.
-
-#exec_always setxkbmap -option grp:caps_toggle "us,ru" -option "grp:caps_toggle,grp_led:caps"
-
-# Displays are configured dynamically by watch-outputs.sh
 
 exec feh --bg-fill ~/.config/i3/wallpaper.png
 
