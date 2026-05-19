@@ -3,9 +3,8 @@
  * Maintainer: joekamprad [joekamprad //a_t// endeavouros.com]
  *******************************************************/
 configuration {
-    font:                "Noto Sans Regular 10";
+    font:                "MesloLGMDZ Nerd Font 10";
     show-icons:          true;
-    icon-theme:          "Qogir";
     display-drun:        "Apps";
     drun-display-format: "{name}";
     scroll-method:       0;
@@ -13,7 +12,7 @@ configuration {
     sidebar-mode:        false;
 }
 
-@import "~/.config/rofi/arc_dark_transparent_colors.rasi"
+@import "~/.config/rofi/catppuccin-mocha.rasi"
 
 window {
     background-color: @background;

@@ -1,13 +1,12 @@
-/*******************************************************
- * ROFI configs i3 powermenu for EndeavourOS
- * Maintainer: joekamprad [joekamprad //a_t// endeavouros.com]
- *******************************************************/
 configuration {
-    font:            "MesloLGMDZ Nerd Font 10";
-    show-icons:      false;
-    scroll-method:   0;
-    disable-history: false;
-    sidebar-mode:    false;
+    font:                "MesloLGMDZ Nerd Font 10";
+    show-icons:          true;
+    display-drun:        ">";
+    drun-display-format: "{name}";
+    scroll-method:       0;
+    disable-history:     false;
+    sidebar-mode:        false;
+    hide-scrollbar:      true;
 }
 
 @import "~/.config/rofi/catppuccin-mocha.rasi"
@@ -15,101 +14,97 @@ configuration {
 window {
     background-color: @background;
     border:           0;
-    padding:          10;
+    padding:          20;
     transparency:     "real";
-    width:            120px;
-    location:         east;
-    /*y-offset:       18;*/
-    /*x-offset:       850;*/
+    width:            800;
+    location:         center;
 }
+
+mainbox {
+    border:  0;
+    padding: 0;
+    children: [ inputbar, listview ];
+}
+
 listview {
-    lines:     7;
-    columns:   1;
-    scrollbar: false;
+    lines:        10;
+    columns:      1;
+    fixed-height: 0;
+    border:       0;
+    spacing:      4px;
+    scrollbar:    false;
+    padding:      8px 0px 0px;
 }
+
 element {
     border:  0;
-    padding: 1px;
+    padding: 6px;
 }
+
 element-text {
     background-color: inherit;
     text-color:       inherit;
+    vertical-align:   0.5;
+    horizontal-align: 0.0;
 }
+
+element-icon {
+    size:            1em;
+    padding:         0px 8px 0px 0px;
+}
+
 element.normal.normal {
     background-color: @normal-background;
     text-color:       @normal-foreground;
 }
+
 element.normal.urgent {
     background-color: @urgent-background;
     text-color:       @urgent-foreground;
 }
+
 element.normal.active {
     background-color: @active-background;
     text-color:       @active-foreground;
 }
+
 element.selected.normal {
     background-color: @selected-normal-background;
     text-color:       @selected-normal-foreground;
 }
+
 element.selected.urgent {
     background-color: @selected-urgent-background;
     text-color:       @selected-urgent-foreground;
 }
+
 element.selected.active {
     background-color: @selected-active-background;
     text-color:       @selected-active-foreground;
 }
+
 element.alternate.normal {
     background-color: @alternate-normal-background;
     text-color:       @alternate-normal-foreground;
 }
+
 element.alternate.urgent {
     background-color: @alternate-urgent-background;
     text-color:       @alternate-urgent-foreground;
 }
+
 element.alternate.active {
     background-color: @alternate-active-background;
     text-color:       @alternate-active-foreground;
 }
-scrollbar {
-    width:        4px;
-    border:       0;
-    handle-color: @normal-foreground;
-    handle-width: 8px;
-    padding:      0;
-}
-mode-switcher {
-    border:       2px 0px 0px;
-    border-color: @separatorcolor;
-}
-button {
-    spacing:    0;
-    text-color: @normal-foreground;
-}
-button.selected {
-    background-color: @selected-normal-background;
-    text-color:       @selected-normal-foreground;
-}
+
 inputbar {
     spacing:    0;
     text-color: @normal-foreground;
-    padding:    1px;
+    padding:    4px;
+    children:   [ prompt, textbox-prompt-colon, entry, case-indicator ];
 }
-case-indicator {
-    spacing:    0;
-    text-color: @normal-foreground;
-}
-entry {
-    spacing:    0;
-    text-color: @normal-foreground;
-}
-prompt {
-    spacing:    0;
-    text-color: @normal-foreground;
-}
-inputbar {
-    children:   [ prompt,textbox-prompt-colon,entry,case-indicator ];
-}
+
 textbox-prompt-colon {
     expand:     false;
     str:        ":";
@@ -117,7 +112,23 @@ textbox-prompt-colon {
     text-color: @normal-foreground;
 }
 
-/*removes the text input line*/
-mainbox {
-  children: [listview];
+prompt {
+    text-color: @foreground;
+}
+
+entry {
+    text-color: @foreground;
+}
+
+case-indicator {
+    spacing:    0;
+    text-color: @normal-foreground;
+}
+
+scrollbar {
+    width:        4px;
+    border:       0;
+    handle-color: @normal-foreground;
+    handle-width: 8px;
+    padding:      0;
 }
