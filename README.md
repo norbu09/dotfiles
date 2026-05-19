@@ -53,7 +53,6 @@ cd ~/.dotfiles
 | `rofi` | App launcher, powermenu, keyhint themes |
 | `dunst` | Notification daemon |
 | `nushell` | Nu shell config |
-| `lvim` | LunarVim config |
 | `redshift` | Auto-brightness hooks |
 
 ## Keybindings
@@ -79,6 +78,6 @@ cd ~/.dotfiles
 
 ```bash
 cd ~/.dotfiles
-stow i3 kitty polybar picom btop fish dunst rofi nushell lvim redshift
+stow i3 kitty polybar picom btop fish dunst rofi nushell redshift
 i3-msg reload
 ```
