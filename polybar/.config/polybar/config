@@ -1,0 +1,205 @@
+;==========================================================
+;   Polybar Config - Dual Monitor Setup
+;==========================================================
+
+[colors]
+background = #1e1e2e
+foreground = #cdd6f4
+primary = #89b4fa
+secondary = #a6e3a1
+alert = #f38ba8
+urgent = #f38ba8
+dimmed = #6c7086
+
+[bar/main]
+monitor = DP-1
+ws-icon = 0
+ws-icon-0 = 1;
+ws-icon-1 = 2;
+ws-icon-2 = 3;
+ws-icon-3 = 4;
+ws-icon-4 = 5;
+filter-workspaces = 1-5
+width = 100%
+height = 24
+radius = 0
+bottom = true
+fixed-center = true
+
+foreground = ${colors.foreground}
+background = ${colors.background}
+
+line-size = 2
+line-color = ${colors.primary}
+
+border-top-size = 0
+border-bottom-size = 2
+border-bottom-color = #313244
+border-left-size = 0
+border-right-size = 0
+
+padding-left = 8
+padding-right = 8
+
+module-margin-left = 2
+module-margin-right = 2
+
+font-0 = "MesloLGMDZ Nerd Font:pixelsize=10;3"
+font-1 = "MesloLGMDZ Nerd Font:pixelsize=10;3"
+
+modules-left = i3 network wifi
+modules-center = date
+modules-right = cpu memory battery volume
+
+tray-position = right
+tray-padding = 4
+tray-background = ${colors.background}
+
+wm-restack = i3
+
+[bar/laptop]
+monitor = eDP-1
+ws-icon = 0
+ws-icon-0 = 6;
+ws-icon-1 = 7;
+ws-icon-2 = 8;
+ws-icon-3 = 9;
+ws-icon-4 = 10;
+filter-workspaces = 6-10
+width = 100%
+height = 24
+radius = 0
+bottom = true
+fixed-center = true
+
+foreground = ${colors.foreground}
+background = ${colors.background}
+
+line-size = 2
+line-color = ${colors.primary}
+
+border-top-size = 0
+border-bottom-size = 2
+border-bottom-color = #313244
+border-left-size = 0
+border-right-size = 0
+
+padding-left = 8
+padding-right = 8
+
+module-margin-left = 2
+module-margin-right = 2
+
+font-0 = "MesloLGMDZ Nerd Font:pixelsize=10;3"
+font-1 = "MesloLGMDZ Nerd Font:pixelsize=10;3"
+
+modules-left = i3 network wifi
+modules-center = date
+modules-right = cpu memory battery volume
+
+tray-position = none
+
+wm-restack = i3
+
+[module/i3]
+type = internal/i3
+format = <label-state> <label-mode>
+pin-workspaces = true
+index-sort = false
+wrapping-scroll = false
+strip-wsnumbers = false
+
+label-mode = %mode%
+label-mode-padding = 2
+label-mode-foreground = ${colors.background}
+label-mode-background = ${colors.primary}
+
+label-focused = %index%
+label-focused-foreground = ${colors.primary}
+label-focused-background = ${colors.background}
+label-focused-underline = ${colors.primary}
+label-focused-padding = 2
+
+label-unfocused = %index%
+label-unfocused-foreground = ${colors.dimmed}
+label-unfocused-background = ${colors.background}
+label-unfocused-padding = 2
+
+label-visible = %index%
+label-visible-foreground = ${colors.foreground}
+label-visible-background = ${colors.background}
+label-visible-underline = ${colors.secondary}
+label-visible-padding = 2
+
+label-urgent = %index%
+label-urgent-foreground = ${colors.background}
+label-urgent-background = ${colors.alert}
+label-urgent-padding = 2
+
+label-separator = ""
+label-separator-foreground = ${colors.dimmed}
+
+[module/network]
+type = internal/network
+interface = enp60s0u1u4
+interval = 3
+format-connected = <label-connected>
+format-disconnected = <label-disconnected>
+label-connected = ETH
+label-disconnected = offline
+
+[module/wifi]
+type = internal/network
+interface = wlan0
+interval = 3
+format-connected = <label-connected>
+format-disconnected = <label-disconnected>
+label-connected = %essid%
+label-disconnected = 
+
+[module/cpu]
+type = internal/cpu
+interval = 2
+format = <label>
+label = CPU: %percentage:2%%
+
+[module/memory]
+type = internal/memory
+interval = 2
+format = <label>
+label = MEM: %percentage_used:2%%
+
+[module/battery]
+type = internal/battery
+interval = 30
+format-charging = <label-charging>
+format-discharging = <label-discharging>
+format-full = <label-full>
+label-charging = BAT: %percentage:2%%
+label-discharging = BAT: %percentage:2%%
+label-full = BAT: 100%
+
+[module/volume]
+type = internal/alsa
+format-volume = <label-volume>
+format-muted = <label-muted>
+label-volume = VOL: %percentage:2%%
+label-muted = VOL: muted
+
+[module/date]
+type = internal/date
+interval = 1
+time = "%H:%M %a %d"
+format = <label>
+label = %time%
+label-foreground = ${colors.foreground}
+
+[settings]
+throttle-output = 5
+screenchange-reload = true
+compositing-background = over
+compositing-foreground = over
+
+[global/wm]
+margin-top = 0
+margin-bottom = 0

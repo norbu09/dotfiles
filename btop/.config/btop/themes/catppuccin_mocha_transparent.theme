@@ -1,0 +1,63 @@
+# Catppuccin Mocha - Transparent background
+# Lets terminal/wallpaper show through
+
+main_bg = "00000000"
+main_fg = "#cdd6f4"
+title = "#89b4fa"
+hi_fg = "#cba6f7"
+selected_bg = "#45475a"
+selected_fg = "#cdd6f4"
+inactive_fg = "#6c7086"
+
+# Box colors
+cpu_box = "#89b4fa"
+mem_box = "#a6e3a1"
+net_box = "#f9e2af"
+proc_box = "#cba6f7"
+
+# CPU graph colors
+cpu_core_user = "#89b4fa"
+cpu_core_system = "#cba6f7"
+cpu_core_nice = "#a6e3a1"
+cpu_core_idle = "#313244"
+cpu_core_iowait = "#f9e2af"
+cpu_core_irq = "#f38ba8"
+cpu_core_softirq = "#fab387"
+cpu_core_steal = "#f5c2e7"
+cpu_core_guest = "#94e2d5"
+
+# Memory graph
+mem_total = "#a6e3a1"
+mem_used = "#89b4fa"
+mem_cached = "#cba6f7"
+mem_free = "#313244"
+mem_available = "#a6e3a1"
+
+# Network graphs
+net_download = "#89b4fa"
+net_upload = "#a6e3a1"
+
+# Process colors
+proc_mem = "#cba6f7"
+proc_cpu = "#89b4fa"
+proc_running = "#a6e3a1"
+proc_sleeping = "#6c7086"
+proc_idle = "#45475a"
+proc_stopped = "#f38ba8"
+proc_zombie = "#f38ba8"
+
+# Temp colors
+temp_cold = "#89b4fa"
+temp_hot = "#f38ba8"
+
+# Disk colors
+disk_total = "#89b4fa"
+disk_used = "#f9e2af"
+disk_free = "#6c7086"
+disk_read = "#a6e3a1"
+disk_write = "#f38ba8"
+
+# Battery colors
+battery_full = "#a6e3a1"
+battery_charging = "#f9e2af"
+battery_discharged = "#f38ba8"
