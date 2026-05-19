@@ -1,0 +1,1 @@
+ACTION=="change", SUBSYSTEM=="button", KERNEL=="LID", ATTR{state}=="closed", RUN+="/usr/bin/systemctl --no-block start worth-suspend.service"

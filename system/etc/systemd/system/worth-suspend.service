@@ -1,0 +1,7 @@
+[Unit]
+Description=Worth — lock then suspend
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/worth-suspend
+TimeoutSec=30

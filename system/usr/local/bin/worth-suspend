@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Lock then suspend.
+set -euo pipefail
+
+loginctl list-sessions --no-legend 2>/dev/null | while read -r id uid user seat rest; do
+  [ -z "$seat" ] && continue
+  d=$(loginctl show-session "$id" -p Display --value 2>/dev/null || true)
+  [ -z "$d" ] && continue
+  su - "$user" -c "DISPLAY=$d i3lock --blur 5" 2>/dev/null || true &
+done
+wait
+
+sleep 1
+systemctl suspend

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Idle monitor — lock+suspend after 10 min of inactivity.
+set -euo pipefail
+
+while true; do
+  idle=$(xprintidle 2>/dev/null || echo 0)
+  if [ "$idle" -gt 600000 ]; then
+    i3lock --blur 5
+    systemctl suspend
+  fi
+  sleep 30
+done
