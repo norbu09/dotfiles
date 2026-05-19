@@ -1,31 +1,31 @@
 * {
-    background:                rgba(30, 30, 46, 230);
-    foreground:                rgba(205, 214, 244, 100%);
+    background:                rgba ( 30, 30, 46, 90 % );
+    foreground:                rgba ( 205, 214, 244, 100 % );
     normal-background:         @background;
     normal-foreground:         @foreground;
-    alternate-normal-background: rgba(69, 71, 90, 180);
+    alternate-normal-background: rgba ( 69, 71, 90, 70 % );
     alternate-normal-foreground: @foreground;
 
-    selected-normal-background:  rgba(137, 180, 250, 100%);
-    selected-normal-foreground:  rgba(30, 30, 46, 100%);
-    selected-urgent-background:  rgba(243, 139, 168, 100%);
-    selected-urgent-foreground:  rgba(30, 30, 46, 100%);
-    selected-active-background:  rgba(166, 227, 161, 100%);
-    selected-active-foreground:  rgba(30, 30, 46, 100%);
+    selected-normal-background:  rgba ( 137, 180, 250, 100 % );
+    selected-normal-foreground:  rgba ( 30, 30, 46, 100 % );
+    selected-urgent-background:  rgba ( 243, 139, 168, 100 % );
+    selected-urgent-foreground:  rgba ( 30, 30, 46, 100 % );
+    selected-active-background:  rgba ( 166, 227, 161, 100 % );
+    selected-active-foreground:  rgba ( 30, 30, 46, 100 % );
 
-    urgent-background:        rgba(243, 139, 168, 40);
-    urgent-foreground:        rgba(243, 139, 168, 100%);
-    alternate-urgent-background: rgba(243, 139, 168, 50);
+    urgent-background:        rgba ( 243, 139, 168, 15 % );
+    urgent-foreground:        rgba ( 243, 139, 168, 100 % );
+    alternate-urgent-background: rgba ( 243, 139, 168, 20 % );
     alternate-urgent-foreground: @urgent-foreground;
 
-    active-background:        rgba(166, 227, 161, 40);
-    active-foreground:        rgba(166, 227, 161, 100%);
-    alternate-active-background: rgba(166, 227, 161, 50);
+    active-background:        rgba ( 166, 227, 161, 15 % );
+    active-foreground:        rgba ( 166, 227, 161, 100 % );
+    alternate-active-background: rgba ( 166, 227, 161, 20 % );
     alternate-active-foreground: @active-foreground;
 
-    border-color:             rgba(69, 71, 90, 100%);
-    separatorcolor:           rgba(69, 71, 90, 100%);
+    border-color:             rgba ( 69, 71, 90, 100 % );
+    separatorcolor:           rgba ( 69, 71, 90, 100 % );
     spacing:                  2;
-    blue:                     rgba(137, 180, 250, 100%);
-    red:                      rgba(243, 139, 168, 100%);
+    blue:                     rgba ( 137, 180, 250, 100 % );
+    red:                      rgba ( 243, 139, 168, 100 % );
 }
