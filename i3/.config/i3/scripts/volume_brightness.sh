@@ -23,24 +23,25 @@ function get_brightness {
     echo $(( current * 100 / max_val ))
 }
 
+function show_xob {
+    echo "$1" > /tmp/xobpipe 2>/dev/null || true
+}
+
 function show_volume_notif {
     local volume mute
     volume=$(get_volume)
     mute=$(get_mute)
     if [ "$mute" = "yes" ]; then
-        dunstify -t 1000 -r 2593 -u normal "MUT  0%" \
-            -h int:value:0 -h string:hlcolor:$muted_color
+        show_xob 0 "$muted_color"
     else
-        dunstify -t 1000 -r 2593 -u normal "VOL  ${volume}%" \
-            -h int:value:$volume -h string:hlcolor:$bar_color
+        show_xob "$volume" "$bar_color"
     fi
 }
 
 function show_brightness_notif {
     local brightness
     brightness=$(get_brightness)
-    dunstify -t 1000 -r 2593 -u normal "BRT  ${brightness}%" \
-        -h int:value:$brightness -h string:hlcolor:$bar_color
+    show_xob "$brightness" "$bar_color"
 }
 
 case $1 in
