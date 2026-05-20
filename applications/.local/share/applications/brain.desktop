@@ -1,0 +1,17 @@
+[Desktop Entry]
+Name=Brain
+GenericName=Terminal entering Brain
+Comment=Terminal entering Brain
+Categories=Distrobox;System;Utility
+Exec=/usr/bin/distrobox enter  brain
+Icon=/home/lenz/.local/share/icons/distrobox/arch.png
+Keywords=distrobox;
+NoDisplay=false
+Terminal=true
+TryExec=/usr/bin/distrobox
+Type=Application
+Actions=Remove;
+
+[Desktop Action Remove]
+Name=Remove Brain from system
+Exec=/usr/bin/distrobox rm  brain

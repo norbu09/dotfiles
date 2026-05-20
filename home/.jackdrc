@@ -1,0 +1,1 @@
+/sbin/jackd -dalsa -dhw:0

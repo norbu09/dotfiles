@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Terminal=false
+Exec=/home/lenz/Worth/Worth daemon -- %U
+Name=Worth AI Agent
+GenericName=Personal AI agent for power users
+Comment=Worth is a personal AI agent that runs locally on your machine.
+GenericName[en]=Personal AI agent for power users
+Comment[en]=Worth is a personal AI agent that runs locally on your machine.
+Icon=/home/lenz/Worth/lib/worth-0.2.1-alpha.29/priv/icon.png
+Categories=GNOME;GTK;Office;
+

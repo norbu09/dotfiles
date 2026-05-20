@@ -56,6 +56,18 @@ cd ~/.dotfiles
 | `redshift` | Auto-brightness hooks |
 | `nvim` | LazyVim with Catppuccin Mocha transparent theme |
 | `starship` | Fast cross-shell prompt (Catppuccin Mocha, Elixir-aware) |
+| `home` | Shell env (.profile), gitconfig, X11 startup (.xinitrc), ALSA/JACK audio routing, wallpaper script, user avatar |
+| `gtk` | GTK3/4 dark theme (Yaru-prussiangreen) with caelestia CSS overrides |
+| `qt` | Qt5/Qt6 Darkly theme with Papirus-Dark icons and Kvantum engine |
+| `desktop-env` | Autostart (1Password, Nextcloud, Worth), xdg-portal config, dark mode manager, XDG desktop env |
+| `cava` | Audio visualizer with Catppuccin-esque gradient colors |
+| `htop` | Themed process monitor with caelestia color scheme |
+| `greenclip` | Clipboard manager with image support |
+| `Thunar` | File manager custom actions (Open Terminal Here) |
+| `alacritty` | Solarized Dark terminal (fallback for kitty) |
+| `autorandr` | Display auto-config profiles (laptop + 5 office setups) |
+| `applications` | Custom desktop entries (brain, Claude Code URL handler, Worth) |
+| `volumeicon` | System tray volume control with alsamixer |
 
 ## Keybindings
 
@@ -80,6 +92,6 @@ cd ~/.dotfiles
 
 ```bash
 cd ~/.dotfiles
-stow i3 kitty polybar picom btop fish dunst rofi nushell redshift nvim starship
+stow i3 kitty polybar picom btop fish dunst rofi nushell redshift nvim starship home gtk qt desktop-env cava htop greenclip Thunar alacritty autorandr applications volumeicon
 i3-msg reload
 ```

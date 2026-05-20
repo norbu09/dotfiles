@@ -1,0 +1,7 @@
+[user]
+	email = mail@norbu09.org
+	name = Lenz Gschwendtner
+[init]
+	defaultBranch = main
+[url "git@github.com:"]
+	insteadOf = https://github.com/

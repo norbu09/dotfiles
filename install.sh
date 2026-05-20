@@ -85,7 +85,9 @@ is_stow_managed() {
 }
 
 # Backup existing conflicting files
-for pkg in i3 kitty polybar picom btop fish dunst rofi nushell redshift nvim starship; do
+for pkg in i3 kitty newsboat opencode polybar picom btop fish dunst rofi nushell \
+            redshift nvim starship home gtk qt desktop-env cava htop \
+            greenclip Thunar alacritty autorandr applications volumeicon; do
     pkg_path="$SCRIPT_DIR/$pkg"
     [ -d "$pkg_path" ] || continue
     while IFS= read -r -d '' f; do
@@ -102,7 +104,9 @@ done
 
 # Stow all packages
 cd "$SCRIPT_DIR"
-for pkg in i3 kitty newsboat opencode polybar picom btop fish dunst rofi nushell redshift nvim starship; do
+for pkg in i3 kitty newsboat opencode polybar picom btop fish dunst rofi nushell \
+            redshift nvim starship home gtk qt desktop-env cava htop \
+            greenclip Thunar alacritty autorandr applications volumeicon; do
     [ -d "$pkg" ] || continue
     stow -t "$HOME" "$pkg" 2>/dev/null && echo "  stow $pkg: OK" || echo "  stow $pkg: skipped (may already be linked)"
 done
