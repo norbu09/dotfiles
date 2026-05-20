@@ -36,7 +36,8 @@ if [ "$PM" = "pacman" ]; then
         i3-wm kitty polybar picom feh fish btop rofi dunst \
         redshift playerctl scrot maim xclip pamixer xob \
         polkit-gnome dex brightnessctl zen-browser-bin \
-        ttf-meslo-nerd starship
+        ttf-meslo-nerd starship lightdm lightdm-gtk-greeter \
+        autorandr alacritty htop neovim thunar cava newsboat
 
     if [ -n "$AUR_INSTALL" ]; then
         $AUR_INSTALL i3lock-color 2>/dev/null || true
@@ -46,14 +47,16 @@ elif [ "$PM" = "apt" ]; then
         i3 kitty polybar picom feh fish btop rofi dunst \
         redshift playerctl scrot maim xclip pamixer \
         policykit-1-gnome brightnessctl zen-browser \
-        fonts-firacode
+        fonts-firacode starship lightdm lightdm-gtk-greeter \
+        htop neovim thunar newsboat
     echo "Note: Install Meslo Nerd Font manually from https://github.com/ryanoasis/nerd-fonts/releases"
 elif [ "$PM" = "dnf" ]; then
     $INSTALL_CMD \
         i3 kitty polybar picom feh fish btop rofi dunst \
         redshift playerctl scrot maim xclip pamixer \
         polkit-gnome brightnessctl zen-browser \
-        meslo-nerd-fonts
+        meslo-nerd-fonts starship lightdm lightdm-gtk-greeter \
+        autorandr alacritty htop neovim thunar cava newsboat
 fi
 
 # --- Deploy with stow ---
