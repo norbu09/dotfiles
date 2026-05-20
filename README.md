@@ -54,6 +54,8 @@ cd ~/.dotfiles
 | `dunst` | Notification daemon |
 | `nushell` | Nu shell config |
 | `redshift` | Auto-brightness hooks |
+| `nvim` | LazyVim with Catppuccin Mocha transparent theme |
+| `starship` | Fast cross-shell prompt (Catppuccin Mocha, Elixir-aware) |
 
 ## Keybindings
 
@@ -78,6 +80,6 @@ cd ~/.dotfiles
 
 ```bash
 cd ~/.dotfiles
-stow i3 kitty polybar picom btop fish dunst rofi nushell redshift
+stow i3 kitty polybar picom btop fish dunst rofi nushell redshift nvim starship
 i3-msg reload
 ```

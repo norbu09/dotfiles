@@ -1,0 +1,98 @@
+return {
+  {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    priority = 1000,
+    opts = {
+      flavour = "mocha",
+      transparent_background = true,
+      term_colors = true,
+      dim_inactive = {
+        enabled = false,
+      },
+      integrations = {
+        cmp = true,
+        gitsigns = true,
+        nvimtree = false,
+        neo_tree = true,
+        noice = true,
+        notify = true,
+        snacks = true,
+        telescope = { enabled = true },
+        treesitter = true,
+        which_key = true,
+        indent_blankline = { enabled = true, colored_indent_levels = true },
+        native_lsp = {
+          enabled = true,
+          virtual_text = {
+            errors = { "italic" },
+            hints = { "italic" },
+            warnings = { "italic" },
+            information = { "italic" },
+            ok = { "italic" },
+          },
+          underlines = {
+            errors = { "underline" },
+            hints = { "underline" },
+            warnings = { "underline" },
+            information = { "underline" },
+            ok = { "underline" },
+          },
+          inlay_hints = {
+            background = true,
+          },
+        },
+        mason = true,
+        markdown = true,
+        mini = true,
+        fzf = true,
+      },
+      highlight_overrides = {
+        mocha = function(mocha)
+          local C = require("catppuccin.palettes").get_palette("mocha")
+          return {
+            NormalFloat = { bg = mocha.none },
+            FloatBorder = { bg = mocha.none, fg = C.surface2 },
+            NormalNC = { bg = mocha.none },
+            NvimTreeNormal = { bg = mocha.none },
+            NeoTreeNormal = { bg = mocha.none },
+            NeoTreeNormalNC = { bg = mocha.none },
+            NoicePopup = { bg = mocha.none },
+            NotifyBackground = { bg = mocha.none },
+            SnacksNormal = { bg = mocha.none },
+            SnacksBorder = { bg = mocha.none, fg = C.surface2 },
+            WhichKeyNormal = { bg = mocha.none },
+            TelescopeNormal = { bg = mocha.none },
+            TelescopeBorder = { bg = mocha.none, fg = C.surface2 },
+            TelescopePromptBorder = { bg = mocha.none, fg = C.surface2 },
+            TelescopeResultsBorder = { bg = mocha.none, fg = C.surface2 },
+            TelescopePreviewBorder = { bg = mocha.none, fg = C.surface2 },
+            TelescopePromptNormal = { bg = mocha.none },
+            TelescopeResultsNormal = { bg = mocha.none },
+            TelescopePreviewNormal = { bg = mocha.none },
+            Pmenu = { bg = mocha.none },
+            PmenuBorder = { bg = mocha.none, fg = C.surface2 },
+            CmpDocumentation = { bg = mocha.none },
+            CmpDocumentationBorder = { bg = mocha.none, fg = C.surface2 },
+            FzfLuaNormal = { bg = mocha.none },
+            FzfLuaBorder = { bg = mocha.none, fg = C.surface2 },
+            FzfLuaPreviewNormal = { bg = mocha.none },
+            LspInfoBorder = { bg = mocha.none, fg = C.surface2 },
+            SignatureHelp = { bg = mocha.none },
+            SignatureHelpBorder = { bg = mocha.none, fg = C.surface2 },
+          }
+        end,
+      },
+    },
+  },
+  {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "catppuccin",
+    },
+  },
+  {
+    "f-person/auto-dark-mode.nvim",
+    opts = {},
+  },
+}
