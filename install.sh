@@ -35,7 +35,7 @@ if [ "$PM" = "pacman" ]; then
     $INSTALL_CMD \
         i3-wm kitty polybar picom feh fish btop rofi dunst \
         redshift playerctl scrot maim xclip pamixer xob \
-        polkit-gnome dex zen-browser-bin \
+        polkit-gnome dex brightnessctl zen-browser-bin \
         ttf-meslo-nerd
 
     if [ -n "$AUR_INSTALL" ]; then
@@ -45,14 +45,14 @@ elif [ "$PM" = "apt" ]; then
     $INSTALL_CMD \
         i3 kitty polybar picom feh fish btop rofi dunst \
         redshift playerctl scrot maim xclip pamixer \
-        policykit-1-gnome zen-browser \
+        policykit-1-gnome brightnessctl zen-browser \
         fonts-firacode
     echo "Note: Install Meslo Nerd Font manually from https://github.com/ryanoasis/nerd-fonts/releases"
 elif [ "$PM" = "dnf" ]; then
     $INSTALL_CMD \
         i3 kitty polybar picom feh fish btop rofi dunst \
         redshift playerctl scrot maim xclip pamixer \
-        polkit-gnome zen-browser \
+        polkit-gnome brightnessctl zen-browser \
         meslo-nerd-fonts
 fi
 

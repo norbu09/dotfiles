@@ -19,9 +19,13 @@ function get_mute {
     pactl get-sink-mute @DEFAULT_SINK@ | grep -Po '(?<=Mute: )(yes|no)'
 }
 
-# Uses regex to get brightness from xbacklight
+# Uses brightnessctl to get current brightness percentage
 function get_brightness {
-    xbacklight -get
+    local current
+    local max_val
+    current=$(brightnessctl get)
+    max_val=$(brightnessctl max)
+    echo $(( current * 100 / max_val ))
 }
 
 # Returns a mute icon, a volume-low icon, or a volume-high icon, depending on the volume
@@ -84,13 +88,13 @@ case $1 in
 
     brightness_up)
     # Increases brightness and displays the notification
-    xbacklight -inc $brightness_step -time 0 
+    brightnessctl set "${brightness_step}%+" -q
     show_brightness_notif
     ;;
 
     brightness_down)
     # Decreases brightness and displays the notification
-    xbacklight -dec $brightness_step -time 0
+    brightnessctl set "${brightness_step}%-" -q
     show_brightness_notif
     ;;
 esac
