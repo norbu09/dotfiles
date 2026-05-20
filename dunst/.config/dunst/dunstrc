@@ -49,10 +49,10 @@
 
     # Set the progress bar height. This includes the frame, so make sure
     # it's at least twice as big as the frame width.
-    progress_bar_height = 10
+    progress_bar_height = 14
 
     # Set the frame width of the progress bar
-    progress_bar_frame_width = 1
+    progress_bar_frame_width = 0
 
     # Set the minimum width for the progress bar
     progress_bar_min_width = 150
@@ -89,7 +89,7 @@
     frame_width = 1
 
     # Defines color of the frame around the notification window.
-    frame_color = "#7f3fbf"
+    frame_color = "#cba6f7"
 
     # Define a color for the separator.
     # possible values are:
@@ -111,7 +111,7 @@
 
     ### Text ###
 
-    font = Noto Sans Regular 9
+    font = MesloLGMDZ Nerd Font 10
 
     # The spacing between lines.  If the height is smaller than the
     # font height, it will get raised to the font height.
@@ -292,23 +292,23 @@
 [urgency_low]
     # IMPORTANT: colors have to be defined in quotation marks.
     # Otherwise the "#" and following would be interpreted as a comment.
-    background = "#28143c"
-    foreground = "#ffffff"
+    background = "#313244"
+    foreground = "#a6adc8"
     timeout = 5
     # Icon for notifications with low urgency, uncomment to enable
     icon = /usr/share/icons/Arc-X-D/status/16/dialog-information.png
 
 [urgency_normal]
-    background = "#28143c"
-    foreground = "#ffffff"
+    background = "#1e1e2e"
+    foreground = "#cdd6f4"
     timeout = 5
     # Icon for notifications with normal urgency, uncomment to enable
     icon = /usr/share/icons/Arc-X-D/status/16/dialog-question.png
 
 [urgency_critical]
-    background = "#28143c"
-    foreground = "#ffffff"
-    frame_color = "#ff7f7f"
+    background = "#1e1e2e"
+    foreground = "#f38ba8"
+    frame_color = "#f38ba8"
     timeout = 120
     # Icon for notifications with critical urgency, uncomment to enable
     icon = /usr/share/icons/Arc-X-D/status/16/dialog-warning.png
