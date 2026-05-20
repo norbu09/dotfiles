@@ -36,7 +36,7 @@ if [ "$PM" = "pacman" ]; then
         i3-wm kitty polybar picom feh fish btop rofi dunst \
         redshift playerctl scrot maim xclip pamixer xob \
         polkit-gnome dex brightnessctl zen-browser-bin \
-        ttf-meslo-nerd
+        ttf-meslo-nerd starship
 
     if [ -n "$AUR_INSTALL" ]; then
         $AUR_INSTALL i3lock-color 2>/dev/null || true
@@ -116,7 +116,7 @@ echo "=== Deploying system files... ==="
 cd "$SCRIPT_DIR/system"
 find . -type f | while read -r f; do
     f="${f#./}"
-    sudo cp "$f" "/$f"
+    sudo install -Dm"$(stat -c %a "$f")" "$f" "/$f"
 done
 sudo udevadm control --reload-rules 2>/dev/null || true
 sudo sysctl --system 2>/dev/null || true
