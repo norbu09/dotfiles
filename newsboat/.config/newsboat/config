@@ -9,7 +9,7 @@ article-sort-order date-desc
 
 # ── Behavior ──
 confirm-exit    yes
-delete-article  no
+delete-read-articles no
 history-limit   100
 max-items       200
 open-browser-in-background yes
