@@ -40,7 +40,11 @@ if [ "$PM" = "pacman" ]; then
         autorandr alacritty htop neovim thunar cava newsboat
 
     if [ -n "$AUR_INSTALL" ]; then
-        $AUR_INSTALL i3lock-color 2>/dev/null || true
+        $AUR_INSTALL i3lock-color asdf-vm 2>/dev/null || true
+    fi
+    # Ensure asdf is initialized for fish
+    if ! grep -q "asdf.fish" ~/.config/fish/config.fish 2>/dev/null; then
+        echo "source ~/.asdf/asdf.fish" >> ~/.config/fish/config.fish
     fi
 elif [ "$PM" = "apt" ]; then
     $INSTALL_CMD \
@@ -50,6 +54,7 @@ elif [ "$PM" = "apt" ]; then
         fonts-firacode starship lightdm lightdm-gtk-greeter \
         htop neovim thunar newsboat
     echo "Note: Install Meslo Nerd Font manually from https://github.com/ryanoasis/nerd-fonts/releases"
+    echo "Note: Install asdf from https://asdf-vm.com/guide/getting-started.html"
 elif [ "$PM" = "dnf" ]; then
     $INSTALL_CMD \
         i3 kitty polybar picom feh fish btop rofi dunst \
@@ -57,6 +62,13 @@ elif [ "$PM" = "dnf" ]; then
         polkit-gnome brightnessctl zen-browser \
         meslo-nerd-fonts starship lightdm lightdm-gtk-greeter \
         autorandr alacritty htop neovim thunar cava newsboat
+    echo "Note: Install asdf from https://asdf-vm.com/guide/getting-started.html"
+fi
+
+# Install asdf (if not present) via git for non-Arch systems
+if ! command -v asdf &>/dev/null && [ "$PM" != "pacman" ]; then
+    echo "=== Installing asdf version manager... ==="
+    git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.16.6 2>/dev/null || true
 fi
 
 # --- Deploy with stow ---

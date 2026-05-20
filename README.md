@@ -68,6 +68,12 @@ cd ~/.dotfiles
 | `autorandr` | Display auto-config profiles (laptop + 5 office setups) |
 | `applications` | Custom desktop entries (brain, Claude Code URL handler, Worth) |
 | `volumeicon` | System tray volume control with alsamixer |
+| `newsboat` | RSS feed reader with Catppuccin Mocha theme |
+
+## Dependencies
+
+- **asdf** — version manager for Elixir, Erlang, Node.js (see `bin/setup-asdf.sh`)
+- `.tool-versions` at `$HOME` pins exact versions
 
 ## Keybindings
 
