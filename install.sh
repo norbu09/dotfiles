@@ -102,7 +102,7 @@ done
 
 # Stow all packages
 cd "$SCRIPT_DIR"
-for pkg in i3 kitty opencode polybar picom btop fish dunst rofi nushell redshift; do
+for pkg in i3 kitty newsboat opencode polybar picom btop fish dunst rofi nushell redshift; do
     [ -d "$pkg" ] || continue
     stow -t "$HOME" "$pkg" 2>/dev/null && echo "  stow $pkg: OK" || echo "  stow $pkg: skipped (may already be linked)"
 done

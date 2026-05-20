@@ -1,0 +1,82 @@
+# ── General ──
+browser         firefox
+refresh-on-startup yes
+reload-threads  5
+reload-time     30
+show-read-feeds no
+feed-sort-order firsttag-articlecount
+article-sort-order date-desc
+
+# ── Behavior ──
+confirm-exit    yes
+delete-article  no
+history-limit   100
+max-items       200
+open-browser-in-background yes
+pager           0
+scrolloff       5
+show-keymap-hint no
+wrap-scroll     no
+wrap-text       yes
+
+# ── URLs ──
+urls-source     " ~/.config/newsboat/urls"
+
+# ── Catppuccin Mocha ──
+color background              #1e1e2e #1e1e2e
+color listnormal               #cdd6f4 #1e1e2e
+color listnormal_unread        #89b4fa #1e1e2e
+color listfocus                #1e1e2e #89b4fa
+color listfocus_unread         #1e1e2e #89b4fa
+color info                     #a6e3a1 #1e1e2e
+color article                  #cdd6f4 #1e1e2e
+
+# Highlight search / hints
+color hline                     #f9e2af #1e1e2e
+
+# Feed list
+color feedlist                  #cdd6f4 #1e1e2e
+color feedlist_unread           #89b4fa #1e1e2e
+color feedlist_focus            #1e1e2e #89b4fa
+color feedlist_focus_unread     #1e1e2e #89b4fa
+
+# Article list
+color articlelist               #cdd6f4 #1e1e2e
+color articlelist_unread        #89b4fa #1e1e2e
+color articlelist_focus         #1e1e2e #89b4fa
+color articlelist_focus_unread  #1e1e2e #89b4fa
+
+# Tags
+color taglist                   #cdd6f4 #1e1e2e
+color taglist_focus             #1e1e2e #89b4fa
+
+# Key hints at bottom
+color hint                       #a6adc8 #1e1e2e
+color hints_focus                #89b4fa #1e1e2e
+
+# Status bar
+color status                     #1e1e2e #a6e3a1
+
+# Unread count
+color unread                     #f9e2af #1e1e2e
+
+# URLs in articles
+color url                        #89b4fa #1e1e2e underline
+
+# Selected / marked articles
+color marked-article             #cba6f7 #1e1e2e bold
+
+# ── Keybindings ──
+# j/k     — navigate
+# n/N     — next/prev unread
+# o       — open in browser
+# O       — open in browser (non-interactive)
+# r       — reload
+# R       — reload all
+# /       — search
+# a       — mark all read
+# w       — toggle read
+# q       — quit
+
+# ── Macro examples (uncomment & adapt) ──
+# macro o set browser "mpv %u"; open-in-browser ; set browser "firefox"
