@@ -154,7 +154,7 @@ interface = wlan0
 interval = 3
 format-connected = <label-connected>
 format-disconnected = <label-disconnected>
-label-connected = %essid%
+label-connected = %essid% -%signal%dBm
 label-disconnected = 
 
 [module/cpu]
