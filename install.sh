@@ -42,10 +42,7 @@ if [ "$PM" = "pacman" ]; then
     if [ -n "$AUR_INSTALL" ]; then
         $AUR_INSTALL i3lock-color asdf-vm 2>/dev/null || true
     fi
-    # Ensure asdf is initialized for fish
-    if ! grep -q "asdf.fish" ~/.config/fish/config.fish 2>/dev/null; then
-        echo "source ~/.asdf/asdf.fish" >> ~/.config/fish/config.fish
-    fi
+
 elif [ "$PM" = "apt" ]; then
     $INSTALL_CMD \
         i3 kitty polybar picom feh fish btop rofi dunst \
@@ -65,10 +62,10 @@ elif [ "$PM" = "dnf" ]; then
     echo "Note: Install asdf from https://asdf-vm.com/guide/getting-started.html"
 fi
 
-# Install asdf (if not present) via git for non-Arch systems
+# Install asdf via git for non-Arch systems (config.fish auto-detects)
 if ! command -v asdf &>/dev/null && [ "$PM" != "pacman" ]; then
     echo "=== Installing asdf version manager... ==="
-    git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.16.6 2>/dev/null || true
+    git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.19.0 2>/dev/null || true
 fi
 
 # --- Deploy with stow ---
