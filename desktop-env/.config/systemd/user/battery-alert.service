@@ -1,0 +1,6 @@
+[Unit]
+Description=Battery level alert and auto-suspend
+
+[Service]
+Type=oneshot
+ExecStart=%h/.config/battery-alert/battery-alert.sh
