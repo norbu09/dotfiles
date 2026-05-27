@@ -136,7 +136,6 @@ sudo systemctl daemon-reload
 sudo systemctl enable worth-suspend.service
 
 echo "=== Dark/light theme daemon ==="
-cp ~/.config/kitty/colors-dark.conf ~/.config/kitty/colors.conf 2>/dev/null || true
 systemctl --user daemon-reload
 systemctl --user enable --now darkman 2>/dev/null || true
 darkman set light 2>/dev/null || true

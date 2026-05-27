@@ -1,7 +1,5 @@
 #!/bin/bash
 
-cp ~/.config/kitty/colors-dark.conf ~/.config/kitty/colors.conf 2>/dev/null || true
-timeout 3 kitty @ set-colors --all --configured ~/.config/kitty/colors.conf 2>/dev/null || true
 sed -i 's|catppuccin-latte|catppuccin-mocha|g' ~/.config/rofi/config.rasi 2>/dev/null || true
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' 2>/dev/null || true
 

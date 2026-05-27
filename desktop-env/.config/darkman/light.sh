@@ -1,7 +1,5 @@
 #!/bin/bash
 
-cp ~/.config/kitty/colors-light.conf ~/.config/kitty/colors.conf 2>/dev/null || true
-timeout 3 kitty @ set-colors --all --configured ~/.config/kitty/colors.conf 2>/dev/null || true
 sed -i 's|catppuccin-mocha|catppuccin-latte|g' ~/.config/rofi/config.rasi 2>/dev/null || true
 gsettings set org.gnome.desktop.interface color-scheme 'default' 2>/dev/null || true
 
