@@ -68,8 +68,10 @@ detect_folders = ["node_modules"]
 
 [python]
 symbol = " "
-format = "[$symbol$version]($style) "
+format = "[$symbol$version( 🐍 $virtualenv)]($style) "
 style = "bold yellow"
+detect_folders = [".venv", "venv", "env", ".env", "virtualenv"]
+detect_extensions = ["py"]
 
 [rust]
 symbol = " "

@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 STATE_DIR="${XDG_RUNTIME_DIR:-/tmp}/battery-alert"
 mkdir -p "$STATE_DIR"
@@ -24,15 +23,24 @@ done
 # No discharging battery found — clear state and exit
 [ -z "$pct" ] && { clear_all; exit 0; }
 
+log()      { logger -t battery-alert "$1"; }
 send() {
     local urg="$1" msg="$2"
-    notify-send -u "$urg" -t 8000 "Battery" "$msg"
+    log "sending $urg notification: $msg"
+    notify-send -u "$urg" -t 8000 "Battery" "$msg" || true
+}
+suspend() {
+    log "suspending system"
+    dbus-send --system --print-reply \
+        --dest=org.freedesktop.login1 \
+        /org/freedesktop/login1 \
+        org.freedesktop.login1.Manager.Suspend boolean:false || log "suspend FAILED"
 }
 
 if [ "$pct" -le "$CRITICAL" ]; then
     send critical "Battery at ${pct}% — suspending now"
     sleep 2
-    systemctl suspend
+    suspend
 elif [ "$pct" -le 5 ] && ! notified 5; then
     send critical "Battery critically low (${pct}%) — plug in now"
     mark 5
