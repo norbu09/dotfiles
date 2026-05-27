@@ -193,6 +193,9 @@ bindsym $mod+g exec kitty -t gitui -e gitui
 bindsym $mod+n exec kitty -t neomutt -e neomutt
 bindsym $mod+m exec kitty -t alsamixer -e alsamixer
 
+# F12 - toggle dark/light theme
+bindsym XF86Favorites exec darkman toggle
+
 # Move window to other monitor
 bindsym $mod+Shift+o move container to output right
 

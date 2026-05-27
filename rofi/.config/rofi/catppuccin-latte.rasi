@@ -1,0 +1,31 @@
+* {
+    background:                rgba ( 239, 241, 245, 90 % );
+    foreground:                rgba ( 76, 79, 105, 100 % );
+    normal-background:         @background;
+    normal-foreground:         @foreground;
+    alternate-normal-background: rgba ( 204, 208, 218, 70 % );
+    alternate-normal-foreground: @foreground;
+
+    selected-normal-background:  rgba ( 30, 102, 245, 100 % );
+    selected-normal-foreground:  rgba ( 239, 241, 245, 100 % );
+    selected-urgent-background:  rgba ( 210, 15, 57, 100 % );
+    selected-urgent-foreground:  rgba ( 239, 241, 245, 100 % );
+    selected-active-background:  rgba ( 64, 160, 43, 100 % );
+    selected-active-foreground:  rgba ( 239, 241, 245, 100 % );
+
+    urgent-background:        rgba ( 210, 15, 57, 15 % );
+    urgent-foreground:        rgba ( 210, 15, 57, 100 % );
+    alternate-urgent-background: rgba ( 210, 15, 57, 20 % );
+    alternate-urgent-foreground: @urgent-foreground;
+
+    active-background:        rgba ( 64, 160, 43, 15 % );
+    active-foreground:        rgba ( 64, 160, 43, 100 % );
+    alternate-active-background: rgba ( 64, 160, 43, 20 % );
+    alternate-active-foreground: @active-foreground;
+
+    border-color:             rgba ( 204, 208, 218, 100 % );
+    separatorcolor:           rgba ( 204, 208, 218, 100 % );
+    spacing:                  2;
+    blue:                     rgba ( 30, 102, 245, 100 % );
+    red:                      rgba ( 210, 15, 57, 100 % );
+}

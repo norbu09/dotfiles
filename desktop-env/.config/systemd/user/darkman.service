@@ -1,0 +1,12 @@
+[Unit]
+Description=Darkman dark/light mode daemon
+Documentation=https://github.com/whynothugo/darkman
+After=graphical-session.target
+
+[Service]
+ExecStart=darkman run
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=graphical-session.target

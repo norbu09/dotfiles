@@ -37,7 +37,7 @@ if [ "$PM" = "pacman" ]; then
         redshift playerctl scrot maim xclip pamixer xob \
         polkit-gnome dex brightnessctl zen-browser-bin \
         ttf-meslo-nerd starship lightdm lightdm-gtk-greeter \
-        autorandr alacritty htop neovim thunar cava newsboat
+        autorandr alacritty htop neovim thunar cava newsboat darkman
 
     if [ -n "$AUR_INSTALL" ]; then
         $AUR_INSTALL i3lock-color asdf-vm 2>/dev/null || true
