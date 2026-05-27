@@ -9,7 +9,7 @@ configuration {
     hide-scrollbar:      true;
 }
 
-@import "~/.config/rofi/catppuccin-latte.rasi"
+@import "~/.config/rofi/catppuccin-mocha.rasi"
 
 window {
     background-color: @background;

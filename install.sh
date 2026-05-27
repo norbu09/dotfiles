@@ -135,12 +135,18 @@ sudo sysctl --system 2>/dev/null || true
 sudo systemctl daemon-reload
 sudo systemctl enable worth-suspend.service
 
-echo "=== Setting wallpaper... ==="
+echo "=== Dark/light theme daemon ==="
+systemctl --user daemon-reload
+systemctl --user enable --now darkman 2>/dev/null || true
+darkman set light 2>/dev/null || true
+
+echo "=== Setting wallpaper ==="
 feh --bg-fill ~/.config/i3/wallpaper.png 2>/dev/null || true
 
 echo ""
 echo "=== Done! ==="
 echo "Reload i3:  Mod+Shift+C"
+echo "Toggle theme: Fn+F12 (star key)"
 echo "New terminal: kitty (transparency should work)"
 echo "Browser:     Mod+W (zen-browser)"
 echo "Cheatsheet:  F1"
