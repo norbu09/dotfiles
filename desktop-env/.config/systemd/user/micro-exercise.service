@@ -1,0 +1,6 @@
+[Unit]
+Description=Micro exercise reminder
+
+[Service]
+Type=oneshot
+ExecStart=%h/.config/micro-exercise/micro-exercise.sh

@@ -143,6 +143,9 @@ darkman set light 2>/dev/null || true
 echo "=== Battery alert timer ==="
 systemctl --user enable --now battery-alert.timer 2>/dev/null || true
 
+echo "=== Micro exercise timer ==="
+systemctl --user enable --now micro-exercise.timer 2>/dev/null || true
+
 echo "=== Setting wallpaper ==="
 feh --bg-fill ~/.config/i3/wallpaper.png 2>/dev/null || true
 
