@@ -1,0 +1,8 @@
+// Allow users in the wheel group to change the system timezone
+// without authentication. Used by autotz for automatic timezone updates.
+polkit.addRule(function(action, subject) {
+    if (action.id == "org.freedesktop.timedate1.set-timezone" &&
+        subject.isInGroup("wheel")) {
+        return polkit.Result.YES;
+    }
+});

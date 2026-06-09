@@ -138,6 +138,7 @@ done
 sudo udevadm control --reload-rules 2>/dev/null || true
 sudo sysctl --system 2>/dev/null || true
 sudo systemctl daemon-reload
+sudo pkill -HUP polkitd 2>/dev/null || true  # reload polkit rules
 
 echo "=== Enabling essential services ==="
 sudo systemctl enable --now NetworkManager 2>/dev/null || true
@@ -171,6 +172,10 @@ fi
 
 echo "=== Battery alert timer ==="
 systemctl --user enable --now battery-alert.timer 2>/dev/null || true
+
+echo "=== Auto timezone timer ==="
+systemctl --user enable --now autotz.timer 2>/dev/null || true
+~/.local/bin/autotz 2>/dev/null && echo "  autotz: initial timezone set" || echo "  autotz: skipped (will run on next timer tick)"
 
 echo "=== Micro break tray app ==="
 echo "  (auto-started from i3 config — right-click tray icon to track exercises)"

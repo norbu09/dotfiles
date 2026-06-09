@@ -1,0 +1,6 @@
+[Unit]
+Description=Auto-set timezone from geoclue location
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/autotz

@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+# Auto-set system timezone from geoclue location.
+# Requires: geoclue agent running, polkit rule for timedatectl.
+set -euo pipefail
+
+CACHE="$HOME/.cache/autotz"
+
+# ── Get coordinates from geoclue ──
+CLIENT=$(gdbus call --system \
+    --dest org.freedesktop.GeoClue2 \
+    --object-path /org/freedesktop/GeoClue2/Manager \
+    --method org.freedesktop.GeoClue2.Manager.GetClient 2>/dev/null \
+    | sed "s/.*'\(.*\)'.*/\1/")
+
+if [ -z "$CLIENT" ]; then
+    echo "autotz: geoclue unavailable"
+    exit 1
+fi
+
+gdbus call --system --dest org.freedesktop.GeoClue2 \
+    --object-path "$CLIENT" \
+    --method org.freedesktop.GeoClue2.Client.Start 2>/dev/null
+
+sleep 2
+
+LOCPATH=$(gdbus call --system --dest org.freedesktop.GeoClue2 \
+    --object-path "$CLIENT" \
+    --method org.freedesktop.DBus.Properties.Get \
+    org.freedesktop.GeoClue2.Client Location 2>/dev/null \
+    | sed "s/.*'\(.*\)'.*/\1/")
+
+if [ -z "$LOCPATH" ]; then
+    echo "autotz: no location from geoclue"
+    exit 1
+fi
+
+LAT=$(gdbus call --system --dest org.freedesktop.GeoClue2 \
+    --object-path "$LOCPATH" \
+    --method org.freedesktop.DBus.Properties.Get \
+    org.freedesktop.GeoClue2.Location Latitude 2>/dev/null \
+    | sed 's/.*<\(.*\)>.*/\1/')
+
+LON=$(gdbus call --system --dest org.freedesktop.GeoClue2 \
+    --object-path "$LOCPATH" \
+    --method org.freedesktop.DBus.Properties.Get \
+    org.freedesktop.GeoClue2.Location Longitude 2>/dev/null \
+    | sed 's/.*<\(.*\)>.*/\1/')
+
+# ── Skip if coordinates haven't changed significantly ──
+COORD_HASH=$(echo "$LAT$LON" | md5sum | cut -c1-8)
+if [ -f "$CACHE" ]; then
+    read -r OLD_HASH OLD_TZ < "$CACHE"
+    if [ "$COORD_HASH" = "$OLD_HASH" ]; then
+        exit 0
+    fi
+fi
+
+# ── Convert coordinates to timezone ──
+TZ=$(curl -sf "https://timeapi.io/api/timezone/coordinate?latitude=${LAT}&longitude=${LON}" 2>/dev/null \
+    | python3 -c "import sys,json; print(json.load(sys.stdin).get('timeZone',''))" 2>/dev/null)
+
+if [ -z "$TZ" ]; then
+    echo "autotz: timezone lookup failed"
+    exit 1
+fi
+
+# ── Set timezone ──
+CURRENT_TZ=$(timedatectl show --property=Timezone --value 2>/dev/null)
+if [ "$TZ" != "$CURRENT_TZ" ]; then
+    timedatectl set-timezone "$TZ" 2>/dev/null || {
+        echo "autotz: failed to set timezone (need polkit rule?)"
+        exit 1
+    }
+    echo "autotz: timezone changed $CURRENT_TZ → $TZ"
+    notify-send "Timezone" "$CURRENT_TZ → $TZ" -i clock 2>/dev/null || true
+else
+    echo "autotz: timezone unchanged ($TZ)"
+fi
+
+echo "$COORD_HASH $TZ" > "$CACHE"
