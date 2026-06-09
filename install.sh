@@ -38,7 +38,7 @@ if [ "$PM" = "pacman" ]; then
         polkit-gnome dex brightnessctl zen-browser-bin \
         ttf-meslo-nerd starship lightdm lightdm-gtk-greeter \
         autorandr alacritty htop neovim thunar cava newsboat darkman \
-        stow git networkmanager power-profiles-daemon kdeconnect \
+        iw stow git networkmanager power-profiles-daemon kdeconnect \
         pipewire wireplumber pipewire-pulse pipewire-alsa \
         bluez bluez-utils \
         noto-fonts noto-fonts-emoji noto-fonts-cjk \
@@ -54,7 +54,7 @@ elif [ "$PM" = "apt" ]; then
         redshift playerctl scrot maim xclip pamixer \
         policykit-1-gnome brightnessctl zen-browser \
         fonts-firacode starship lightdm lightdm-gtk-greeter \
-        htop neovim thunar newsboat kdeconnect
+        htop neovim thunar newsboat kdeconnect iw
     echo "Note: Install Meslo Nerd Font manually from https://github.com/ryanoasis/nerd-fonts/releases"
     echo "Note: Install asdf from https://asdf-vm.com/guide/getting-started.html"
 elif [ "$PM" = "dnf" ]; then
@@ -63,7 +63,7 @@ elif [ "$PM" = "dnf" ]; then
         redshift playerctl scrot maim xclip pamixer \
         polkit-gnome brightnessctl zen-browser \
         meslo-nerd-fonts starship lightdm lightdm-gtk-greeter \
-        autorandr alacritty htop neovim thunar cava newsboat kdeconnect
+        autorandr alacritty htop neovim thunar cava newsboat kdeconnect iw
     echo "Note: Install asdf from https://asdf-vm.com/guide/getting-started.html"
 fi
 
