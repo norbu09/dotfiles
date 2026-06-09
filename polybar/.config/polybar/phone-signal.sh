@@ -42,15 +42,6 @@ if [ "$CURRENT_SSID" = "$PHONE_SSID" ]; then
                 3|4) BARS="▁▄▆█" ;;
                 *)   BARS="?" ;;
             esac
-            case "$TYPE" in
-                5G|5g|NR) TYPE="5G" ;;
-                LTE|lte)  TYPE="LTE" ;;
-                HSPA|hspa) TYPE="H" ;;
-                UMTS|umts) TYPE="3G" ;;
-                EDGE|edge) TYPE="E" ;;
-                GPRS|gprs) TYPE="G" ;;
-                "")       TYPE="" ;;
-            esac
             echo "📶 ${TYPE} ${BARS}"
             exit 0
         fi
