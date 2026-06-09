@@ -47,13 +47,9 @@ module-margin-right = 2
 font-0 = "MesloLGMDZ Nerd Font:pixelsize=10;3"
 font-1 = "MesloLGMDZ Nerd Font:pixelsize=10;3"
 
-modules-left = i3 network wifi
+modules-left = i3 network network-signal
 modules-center = date
-modules-right = cpu memory battery volume
-
-tray-position = right
-tray-padding = 4
-tray-background = ${colors.background}
+modules-right = cpu memory battery volume tray
 
 wm-restack = i3
 
@@ -93,11 +89,9 @@ module-margin-right = 2
 font-0 = "MesloLGMDZ Nerd Font:pixelsize=10;3"
 font-1 = "MesloLGMDZ Nerd Font:pixelsize=10;3"
 
-modules-left = i3 network wifi
+modules-left = i3 network network-signal
 modules-center = date
-modules-right = cpu memory battery volume
-
-tray-position = none
+modules-right = cpu memory battery volume tray
 
 wm-restack = i3
 
@@ -148,14 +142,12 @@ format-disconnected = <label-disconnected>
 label-connected = ETH
 label-disconnected = offline
 
-[module/wifi]
-type = internal/network
-interface = wlan0
-interval = 3
-format-connected = <label-connected>
-format-disconnected = <label-disconnected>
-label-connected = %essid% -%signal%dBm
-label-disconnected = 
+[module/network-signal]
+type = custom/script
+exec = ~/.config/polybar/phone-signal.sh
+interval = 5
+format = <label>
+label = %output%
 
 [module/cpu]
 type = internal/cpu
@@ -193,6 +185,11 @@ time = "%H:%M %a %d"
 format = <label>
 label = %time%
 label-foreground = ${colors.foreground}
+
+[module/tray]
+type = internal/tray
+format-margin = 0px
+tray-spacing = 4
 
 [settings]
 throttle-output = 5

@@ -37,7 +37,12 @@ if [ "$PM" = "pacman" ]; then
         redshift playerctl scrot maim xclip pamixer xob \
         polkit-gnome dex brightnessctl zen-browser-bin \
         ttf-meslo-nerd starship lightdm lightdm-gtk-greeter \
-        autorandr alacritty htop neovim thunar cava newsboat darkman
+        autorandr alacritty htop neovim thunar cava newsboat darkman \
+        stow git networkmanager power-profiles-daemon kdeconnect \
+        pipewire wireplumber pipewire-pulse pipewire-alsa \
+        bluez bluez-utils \
+        noto-fonts noto-fonts-emoji noto-fonts-cjk \
+        xdg-user-dirs pavucontrol
 
     if [ -n "$AUR_INSTALL" ]; then
         $AUR_INSTALL i3lock-color asdf-vm 2>/dev/null || true
@@ -49,7 +54,7 @@ elif [ "$PM" = "apt" ]; then
         redshift playerctl scrot maim xclip pamixer \
         policykit-1-gnome brightnessctl zen-browser \
         fonts-firacode starship lightdm lightdm-gtk-greeter \
-        htop neovim thunar newsboat
+        htop neovim thunar newsboat kdeconnect
     echo "Note: Install Meslo Nerd Font manually from https://github.com/ryanoasis/nerd-fonts/releases"
     echo "Note: Install asdf from https://asdf-vm.com/guide/getting-started.html"
 elif [ "$PM" = "dnf" ]; then
@@ -58,7 +63,7 @@ elif [ "$PM" = "dnf" ]; then
         redshift playerctl scrot maim xclip pamixer \
         polkit-gnome brightnessctl zen-browser \
         meslo-nerd-fonts starship lightdm lightdm-gtk-greeter \
-        autorandr alacritty htop neovim thunar cava newsboat
+        autorandr alacritty htop neovim thunar cava newsboat kdeconnect
     echo "Note: Install asdf from https://asdf-vm.com/guide/getting-started.html"
 fi
 
@@ -99,7 +104,7 @@ is_stow_managed() {
 # Backup existing conflicting files
 for pkg in i3 kitty newsboat opencode polybar picom btop fish dunst rofi nushell \
             redshift nvim starship home gtk qt desktop-env cava htop \
-            greenclip Thunar alacritty autorandr applications volumeicon; do
+            greenclip Thunar alacritty autorandr applications volumeicon bin; do
     pkg_path="$SCRIPT_DIR/$pkg"
     [ -d "$pkg_path" ] || continue
     while IFS= read -r -d '' f; do
@@ -118,7 +123,7 @@ done
 cd "$SCRIPT_DIR"
 for pkg in i3 kitty newsboat opencode polybar picom btop fish dunst rofi nushell \
             redshift nvim starship home gtk qt desktop-env cava htop \
-            greenclip Thunar alacritty autorandr applications volumeicon; do
+            greenclip Thunar alacritty autorandr applications volumeicon bin; do
     [ -d "$pkg" ] || continue
     stow -t "$HOME" "$pkg" 2>/dev/null && echo "  stow $pkg: OK" || echo "  stow $pkg: skipped (may already be linked)"
 done
@@ -133,18 +138,28 @@ done
 sudo udevadm control --reload-rules 2>/dev/null || true
 sudo sysctl --system 2>/dev/null || true
 sudo systemctl daemon-reload
-sudo systemctl enable worth-suspend.service
+
+echo "=== Enabling essential services ==="
+sudo systemctl enable --now NetworkManager 2>/dev/null || true
+sudo systemctl enable --now bluetooth 2>/dev/null || true
 
 echo "=== Dark/light theme daemon ==="
+# Initialize state file so toggle.sh knows the starting mode
+echo "light" > /tmp/.theme-mode
+
 systemctl --user daemon-reload
-systemctl --user enable --now darkman 2>/dev/null || true
-darkman set light 2>/dev/null || true
+if systemctl --user enable --now darkman 2>/dev/null; then
+    sleep 0.5  # let D-Bus interface come up
+    darkman set light 2>/dev/null && echo "  darkman: light mode" || echo "  darkman: started, but set light failed (may need a moment)"
+else
+    echo "  darkman daemon not available — theme toggle uses standalone script"
+fi
 
 echo "=== Battery alert timer ==="
 systemctl --user enable --now battery-alert.timer 2>/dev/null || true
 
-echo "=== Micro exercise timer ==="
-systemctl --user enable --now micro-exercise.timer 2>/dev/null || true
+echo "=== Micro break tray app ==="
+echo "  (auto-started from i3 config — right-click tray icon to track exercises)"
 
 echo "=== Setting wallpaper ==="
 feh --bg-fill ~/.config/i3/wallpaper.png 2>/dev/null || true
