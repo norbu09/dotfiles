@@ -146,6 +146,17 @@ sudo systemctl enable --now bluetooth 2>/dev/null || true
 echo "=== Starting geoclue (for redshift location) ==="
 sudo systemctl start geoclue 2>/dev/null || true
 
+# Allow redshift to query geoclue (needed on non-GNOME/KDE setups)
+if ! grep -q "^\[redshift\]" /etc/geoclue/geoclue.conf 2>/dev/null; then
+    echo "[redshift]" | sudo tee -a /etc/geoclue/geoclue.conf >/dev/null
+    echo "allowed=true" | sudo tee -a /etc/geoclue/geoclue.conf >/dev/null
+    echo "system=false" | sudo tee -a /etc/geoclue/geoclue.conf >/dev/null
+    echo "users=" | sudo tee -a /etc/geoclue/geoclue.conf >/dev/null
+    echo "  geoclue: allowed redshift"
+else
+    echo "  geoclue: redshift already allowed"
+fi
+
 echo "=== Dark/light theme daemon ==="
 # Initialize state file so toggle.sh knows the starting mode
 echo "light" > /tmp/.theme-mode
