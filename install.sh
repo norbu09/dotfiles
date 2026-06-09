@@ -38,7 +38,7 @@ if [ "$PM" = "pacman" ]; then
         polkit-gnome dex brightnessctl zen-browser-bin \
         ttf-meslo-nerd starship lightdm lightdm-gtk-greeter \
         autorandr alacritty htop neovim thunar cava newsboat darkman \
-        iw stow git networkmanager power-profiles-daemon kdeconnect \
+        iw stow git networkmanager power-profiles-daemon kdeconnect geoclue \
         pipewire wireplumber pipewire-pulse pipewire-alsa \
         bluez bluez-utils \
         noto-fonts noto-fonts-emoji noto-fonts-cjk \
@@ -54,7 +54,7 @@ elif [ "$PM" = "apt" ]; then
         redshift playerctl scrot maim xclip pamixer \
         policykit-1-gnome brightnessctl zen-browser \
         fonts-firacode starship lightdm lightdm-gtk-greeter \
-        htop neovim thunar newsboat kdeconnect iw
+        htop neovim thunar newsboat kdeconnect iw geoclue-2.0
     echo "Note: Install Meslo Nerd Font manually from https://github.com/ryanoasis/nerd-fonts/releases"
     echo "Note: Install asdf from https://asdf-vm.com/guide/getting-started.html"
 elif [ "$PM" = "dnf" ]; then
@@ -63,7 +63,7 @@ elif [ "$PM" = "dnf" ]; then
         redshift playerctl scrot maim xclip pamixer \
         polkit-gnome brightnessctl zen-browser \
         meslo-nerd-fonts starship lightdm lightdm-gtk-greeter \
-        autorandr alacritty htop neovim thunar cava newsboat kdeconnect iw
+        autorandr alacritty htop neovim thunar cava newsboat kdeconnect iw geoclue2
     echo "Note: Install asdf from https://asdf-vm.com/guide/getting-started.html"
 fi
 
@@ -142,6 +142,9 @@ sudo systemctl daemon-reload
 echo "=== Enabling essential services ==="
 sudo systemctl enable --now NetworkManager 2>/dev/null || true
 sudo systemctl enable --now bluetooth 2>/dev/null || true
+
+echo "=== Starting geoclue (for redshift location) ==="
+sudo systemctl start geoclue 2>/dev/null || true
 
 echo "=== Dark/light theme daemon ==="
 # Initialize state file so toggle.sh knows the starting mode
