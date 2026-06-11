@@ -177,8 +177,9 @@ echo "=== Auto timezone timer ==="
 systemctl --user enable --now autotz.timer 2>/dev/null || true
 ~/.local/bin/autotz 2>/dev/null && echo "  autotz: initial timezone set" || echo "  autotz: skipped (will run on next timer tick)"
 
-echo "=== Micro break tray app ==="
-echo "  (auto-started from i3 config — right-click tray icon to track exercises)"
+echo "=== Micro break exercise daemon ==="
+~/.local/bin/microbreak-db && echo "  microbreak-db: exercise database built"
+systemctl --user enable --now microbreak.service 2>/dev/null && echo "  microbreak: daemon started (tray icon)" || echo "  microbreak: service failed to start — check systemctl --user status microbreak"
 
 echo "=== Setting wallpaper ==="
 feh --bg-fill ~/.config/i3/wallpaper.png 2>/dev/null || true

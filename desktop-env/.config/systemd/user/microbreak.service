@@ -1,0 +1,13 @@
+[Unit]
+Description=Micro Break — research-backed micro-exercise daemon
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/microbreak
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=graphical-session.target

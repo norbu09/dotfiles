@@ -1,9 +1,0 @@
-[Unit]
-Description=Periodic micro exercise reminder (every 15 min)
-
-[Timer]
-OnBootSec=5min
-OnUnitActiveSec=15min
-
-[Install]
-WantedBy=timers.target

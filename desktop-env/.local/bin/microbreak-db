@@ -1,0 +1,482 @@
+#!/usr/bin/env python3
+"""Build / rebuild the microbreak SQLite database with research-backed exercises.
+
+Sources:
+  - "Exercise Snacking" concept (Sports Medicine and Health Science, 2025)
+  - University of Essex: 16 min bodyweight exercises over 8h → muscle + balance in 4 weeks
+  - Lancet Public Health (2023): VILPA — 1-2 min vigorous intermittent activity reduces mortality
+  - Stair-climbing study: 3×20 s/day for 6 weeks → VO₂max +5 %, peak power +12 %
+  - NEAT (non-exercise activity thermogenesis) research
+
+Categories:
+  cardio         — heart-rate elevation, calorie burn, fat oxidation
+  strength_upper — chest, shoulders, triceps, back
+  strength_lower — quads, glutes, hamstrings, calves
+  core           — abdominals, obliques, lower back, stability
+  mobility       — flexibility, joint health, posture correction
+"""
+
+import sqlite3
+import sys
+from pathlib import Path
+
+DB_PATH = Path.home() / ".local/share/microbreak/microbreak.db"
+
+SCHEMA = """
+CREATE TABLE IF NOT EXISTS exercises (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    name        TEXT    NOT NULL,
+    category    TEXT    NOT NULL CHECK (category IN (
+                    'cardio','strength_upper','strength_lower','core','mobility'
+                )),
+    description TEXT    NOT NULL,
+    intensity   INTEGER NOT NULL CHECK (intensity BETWEEN 1 AND 5),
+    duration_sec INTEGER NOT NULL,
+    muscle_groups TEXT  NOT NULL,   -- comma-separated
+    calories_per_min_approx REAL,
+    source_notes TEXT
+);
+
+CREATE TABLE IF NOT EXISTS sessions (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    date        TEXT    NOT NULL,    -- ISO date YYYY-MM-DD
+    time        TEXT    NOT NULL,    -- HH:MM
+    exercise_id INTEGER NOT NULL,
+    status      TEXT    NOT NULL CHECK (status IN ('done','missed','skipped')),
+    FOREIGN KEY (exercise_id) REFERENCES exercises(id)
+);
+
+CREATE TABLE IF NOT EXISTS feedback (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    session_id      INTEGER NOT NULL UNIQUE,
+    difficulty_rating INTEGER CHECK (difficulty_rating BETWEEN 1 AND 5),
+    effectiveness_rating INTEGER CHECK (effectiveness_rating BETWEEN 1 AND 5),
+    notes           TEXT,
+    created_at      TEXT NOT NULL DEFAULT (datetime('now','localtime')),
+    FOREIGN KEY (session_id) REFERENCES sessions(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_sessions_date ON sessions(date);
+CREATE INDEX IF NOT EXISTS idx_sessions_exercise ON sessions(exercise_id);
+CREATE INDEX IF NOT EXISTS idx_feedback_session ON feedback(session_id);
+"""
+
+# ── Exercise library ──────────────────────────────────────────────────────
+# Each tuple: (name, category, description, intensity, duration_sec,
+#              muscle_groups, calories_per_min, source_notes)
+EXERCISES = [
+    # ═══ CARDIO — fat burning, heart rate elevation ═══
+    (
+        "Jumping Jacks",
+        "cardio",
+        "Stand with feet together, arms at sides. Jump feet out wide while raising arms overhead, then jump back to start. Maintain a steady rhythm.",
+        4, 45, "full body, shoulders, legs",
+        8.0,
+        "Classic plyometric. MET ≈8. ≈10 kcal/min at 70 kg."
+    ),
+    (
+        "High Knees",
+        "cardio",
+        "Run in place, driving knees up to hip height. Pump arms. Land on balls of feet.",
+        4, 30, "hip flexors, quads, core, calves",
+        8.5,
+        "Elevates HR rapidly. Excellent for hip-flexor activation."
+    ),
+    (
+        "Burpees (Half)",
+        "cardio",
+        "From standing, squat down, step back to plank (no push-up), step forward, stand. Skip the jump if ceiling is low.",
+        5, 45, "full body, chest, legs, core",
+        10.0,
+        "MET 8-14. The single highest-calorie bodyweight move. Half-burpee for office-friendliness."
+    ),
+    (
+        "Mountain Climbers",
+        "cardio",
+        "Start in plank position. Drive knees alternately toward chest at a fast pace. Keep hips low.",
+        4, 30, "core, hip flexors, shoulders, quads",
+        9.0,
+        "High muscle activation in rectus abdominis + cardio. EMG studies show strong core recruitment."
+    ),
+    (
+        "Skater Hops",
+        "cardio",
+        "Hop laterally from one foot to the other, sweeping the trailing leg behind. Swing arms for momentum.",
+        3, 30, "glutes, quads, hamstrings, calves",
+        7.5,
+        "Lateral movement — rare in daily life, great for adductor/abductor balance."
+    ),
+    (
+        "Butt Kicks",
+        "cardio",
+        "Run in place, kicking heels up toward glutes. Keep upper body upright. Pump arms.",
+        3, 30, "hamstrings, calves",
+        7.0,
+        "Low-impact way to elevate HR. Great hamstring warm-up."
+    ),
+    (
+        "Fast Squats (Bodyweight)",
+        "cardio",
+        "Bodyweight squats at a brisk pace (≈1 per second). Go to parallel or slightly below. Keep chest up.",
+        4, 40, "quads, glutes, hamstrings, core",
+        7.5,
+        "Combines lower-body strength with cardio when done fast. Essex study used squats in exercise-snack protocol."
+    ),
+    (
+        "Shadow Boxing",
+        "cardio",
+        "Throw light punches (jab, cross, hook, uppercut) while staying light on your feet. Keep core engaged.",
+        4, 40, "shoulders, arms, core, legs",
+        8.0,
+        "Upper-body cardio. Improves coordination. Popular in office exercise-snack routines."
+    ),
+
+    # ═══ STRENGTH UPPER — push/pull, chest, shoulders, back, arms ═══
+    (
+        "Standard Push-Ups",
+        "strength_upper",
+        "Hands shoulder-width, body straight. Lower chest to elbow height, push back up. Elbows at ≈45°.",
+        4, 40, "chest, anterior deltoids, triceps, core",
+        6.5,
+        "EMG: high pectoralis major + triceps activation. The fundamental upper-body push."
+    ),
+    (
+        "Incline Push-Ups (Desk)",
+        "strength_upper",
+        "Hands on desk edge, feet back so body is straight. Lower chest toward desk, push back.",
+        3, 40, "chest (lower pec emphasis), triceps, core",
+        5.0,
+        "Easier regression for beginners. Great for office — use your actual desk."
+    ),
+    (
+        "Tricep Dips (Chair)",
+        "strength_upper",
+        "Sit on chair edge, hands next to hips. Slide forward, lower body by bending elbows to ≈90°, push back up.",
+        3, 40, "triceps, anterior deltoids, chest",
+        5.5,
+        "Classic office exercise. Keep back close to chair to protect shoulders."
+    ),
+    (
+        "Pike Push-Ups",
+        "strength_upper",
+        "From downward-dog position (hips high), lower head toward floor by bending elbows, push back.",
+        5, 35, "anterior deltoids, triceps, upper chest",
+        6.0,
+        "Bodyweight overhead press. Builds shoulder strength for handstand progressions."
+    ),
+    (
+        "Shoulder Taps (Plank)",
+        "strength_upper",
+        "In plank position, alternately tap opposite shoulder with each hand. Minimize hip rotation.",
+        3, 40, "shoulders, triceps, core, serratus anterior",
+        5.0,
+        "Anti-rotation core + shoulder stability. Serratus anterior activation for shoulder health."
+    ),
+    (
+        "Doorframe Rows",
+        "strength_upper",
+        "Stand in doorway, grab frame at chest height, lean back with straight arms, pull chest to frame.",
+        3, 40, "lats, rhomboids, biceps, rear delts",
+        5.0,
+        "The missing link — pulling exercise. Counters desk hunch. Can use any sturdy vertical surface."
+    ),
+    (
+        "Desk Angels",
+        "strength_upper",
+        "Stand with back against wall, arms at 90° like a goalpost. Slide arms up overhead, keeping contact with wall.",
+        2, 35, "rotator cuff, lower traps, rhomboids",
+        2.5,
+        "Corrective exercise for rounded shoulders. Low intensity, high postural value."
+    ),
+    (
+        "Diamond Push-Ups",
+        "strength_upper",
+        "Push-up with hands together under chest forming a diamond (thumbs+index fingers touching).",
+        5, 30, "triceps, inner chest, anterior deltoids",
+        7.0,
+        "EMG: highest triceps activation among push-up variants. Advanced."
+    ),
+
+    # ═══ STRENGTH LOWER — quads, glutes, hamstrings, calves ═══
+    (
+        "Bodyweight Squats",
+        "strength_lower",
+        "Feet shoulder-width, toes slightly out. Squat down like sitting in a chair, chest up, knees track over toes. Go as deep as comfortable.",
+        3, 45, "quads, glutes, hamstrings, core, erector spinae",
+        6.0,
+        "King of lower-body exercises. Essex study: 16 min/day improved strength in 4 weeks."
+    ),
+    (
+        "Reverse Lunges",
+        "strength_lower",
+        "Step one foot backward, lower until both knees ≈90°. Front knee stays over ankle. Push through front heel to return. Alternate legs.",
+        3, 45, "glutes, quads, hamstrings, calves",
+        6.5,
+        "Kinder on knees than forward lunges. Essex study exercise-snack protocol staple."
+    ),
+    (
+        "Glute Bridges",
+        "strength_lower",
+        "Lie on back, knees bent, feet flat. Drive hips up by squeezing glutes. Hold 2 s at top, lower slowly.",
+        2, 45, "glutes, hamstrings, erector spinae",
+        4.0,
+        "Essential for counteracting sitting-induced glute amnesia. EMG: high gluteus maximus activation."
+    ),
+    (
+        "Single-Leg Glute Bridges",
+        "strength_lower",
+        "Like glute bridges but one leg extended straight. Drive up with one glute. Switch halfway.",
+        4, 40, "glutes, hamstrings, core",
+        5.0,
+        "Unilateral work identifies + fixes left-right imbalances. Higher intensity than bilateral."
+    ),
+    (
+        "Calf Raises",
+        "strength_lower",
+        "Stand on both feet, rise onto toes as high as possible, lower slowly. Use a step edge for extra ROM if available.",
+        2, 40, "gastrocnemius, soleus",
+        3.5,
+        "Simple but effective. Can do while waiting for coffee. Improves ankle stability."
+    ),
+    (
+        "Single-Leg Calf Raises",
+        "strength_lower",
+        "Stand on one foot (hold wall/desk for balance). Rise onto toes, lower slowly. Switch halfway.",
+        3, 35, "gastrocnemius, soleus",
+        4.0,
+        "Unilateral calf work. Builds stabilizer muscles in ankle."
+    ),
+    (
+        "Wall Sit",
+        "strength_lower",
+        "Back flat against wall, slide down until thighs are parallel to floor (or as close as comfortable). Hold.",
+        4, 40, "quads, glutes, hamstrings",
+        6.0,
+        "Isometric strength + endurance. Deceptively hard. Used in physiotherapy and sports conditioning."
+    ),
+    (
+        "Bulgarian Split Squats",
+        "strength_lower",
+        "Back foot elevated on chair/desk edge. Front foot forward. Lower until front thigh ≈ parallel. Drive up through front heel.",
+        5, 40, "quads, glutes, hamstrings, balance",
+        7.0,
+        "Advanced unilateral exercise. High glute + quad EMG activation. Balance challenge."
+    ),
+    (
+        "Lateral Lunges",
+        "strength_lower",
+        "Step wide to one side, bending that knee while keeping other leg straight. Push back to center. Alternate sides.",
+        3, 40, "adductors, glutes, quads, hamstrings",
+        6.0,
+        "Frontal-plane movement — fills a gap most programs miss. Hip adductor/abductor balance."
+    ),
+    (
+        "Single-Leg Romanian Deadlift",
+        "strength_lower",
+        "Stand on one leg, hinge forward at hips, extend other leg behind. Keep back straight. Return to standing. Switch halfway.",
+        4, 35, "hamstrings, glutes, erector spinae, balance",
+        5.5,
+        "Posterior chain + balance. Bodyweight only — focus on hip hinge pattern."
+    ),
+
+    # ═══ CORE — abdominals, obliques, lower back, stability ═══
+    (
+        "Plank Hold",
+        "core",
+        "Forearms on floor, elbows under shoulders, body in straight line. Squeeze glutes, engage abs. Breathe.",
+        3, 40, "transverse abdominis, rectus abdominis, shoulders, glutes",
+        4.5,
+        "Anti-extension core stability. EMG: high activation across entire abdominal wall."
+    ),
+    (
+        "Side Plank (each side)",
+        "core",
+        "Lie on side, forearm under shoulder, stack feet. Lift hips to form straight line. Hold, then switch sides.",
+        3, 40, "obliques, quadratus lumborum, gluteus medius",
+        4.0,
+        "Lateral core stability. QL activation important for low-back health."
+    ),
+    (
+        "Bicycle Crunches",
+        "core",
+        "Lie on back, hands behind head. Bring opposite elbow to knee while extending other leg. Alternate slowly.",
+        4, 35, "rectus abdominis, obliques, hip flexors",
+        5.5,
+        "ACE study: ranked #1 for rectus abdominis activation among ab exercises."
+    ),
+    (
+        "Dead Bug",
+        "core",
+        "Lie on back, arms up, legs in tabletop. Slowly extend opposite arm+leg toward floor, return, switch sides.",
+        3, 40, "transverse abdominis, rectus abdominis, hip flexors",
+        4.0,
+        "Anti-extension core. McGill-recommended for low-back safety. Excellent coordination drill."
+    ),
+    (
+        "Bird Dog",
+        "core",
+        "On hands and knees, extend opposite arm and leg simultaneously. Hold briefly, return, switch sides.",
+        2, 35, "erector spinae, glutes, shoulders, transverse abdominis",
+        3.5,
+        "McGill Big 3 exercise. Builds posterior chain coordination + lumbar stability."
+    ),
+    (
+        "Russian Twists",
+        "core",
+        "Sit with knees bent, lean back slightly, feet off floor (or heels down for easier version). Rotate torso side to side.",
+        3, 35, "obliques, rectus abdominis",
+        5.0,
+        "Rotational core work. Keep spine neutral — rotate from thoracic, not lumbar."
+    ),
+    (
+        "Leg Raises",
+        "core",
+        "Lie on back, legs straight. Lift legs to 90° (or as high as possible), lower slowly without arching back.",
+        4, 30, "lower rectus abdominis, hip flexors",
+        5.0,
+        "Targets lower abdominals. Keep lower back pressed to floor throughout."
+    ),
+    (
+        "Hollow Body Hold",
+        "core",
+        "Lie on back, press lower back into floor. Lift shoulders and legs slightly off floor, arms overhead. Hold.",
+        4, 30, "rectus abdominis, transverse abdominis, hip flexors",
+        5.0,
+        "Gymnastics staple. Builds full anterior-chain tension. Progress from tucked to extended."
+    ),
+
+    # ═══ MOBILITY — flexibility, joint health, posture ═══
+    (
+        "Neck Rolls",
+        "mobility",
+        "Slowly roll head in a circle: chin to chest → ear to shoulder → look up → other ear to shoulder. 3 each direction.",
+        1, 30, "cervical spine, trapezius",
+        1.5,
+        "Relieves neck tension from screen use. Go slow — never forceful."
+    ),
+    (
+        "Shoulder Shrugs + Rolls",
+        "mobility",
+        "Shrug shoulders up to ears, then roll them back and down. 5 shrugs, then 5 full backward rolls.",
+        1, 30, "upper trapezius, levator scapulae",
+        1.5,
+        "Releases upper-trap tension from desk posture. Pair with deep breathing."
+    ),
+    (
+        "Cat-Cow Stretch",
+        "mobility",
+        "On hands and knees. Arch spine up (cat), then drop belly and lift head+tailbone (cow). Flow with breath.",
+        1, 35, "spine, erector spinae, abdominals",
+        2.0,
+        "Spinal segmental mobility. Yoga staple. Excellent for intervertebral disc health."
+    ),
+    (
+        "Standing Forward Fold",
+        "mobility",
+        "Stand, hinge at hips, fold forward. Let arms and head hang. Bend knees slightly if hamstrings are tight. Breathe.",
+        1, 35, "hamstrings, erector spinae, calves",
+        2.0,
+        "Decompresses spine. Hamstring + posterior chain stretch. Hold, don't bounce."
+    ),
+    (
+        "Hip Circles",
+        "mobility",
+        "Hands on hips, make large circles with hips. 5 each direction. Keep feet planted.",
+        1, 25, "hip flexors, glutes, lower back",
+        2.0,
+        "Lubricates hip joint capsule. Counters sitting-induced hip stiffness."
+    ),
+    (
+        "Torso Twists",
+        "mobility",
+        "Stand with feet hip-width, arms crossed over chest. Rotate torso left and right. Keep hips facing forward.",
+        1, 30, "obliques, thoracic spine, lower back",
+        2.0,
+        "Thoracic mobility — the spine segment that stiffens most from desk work."
+    ),
+    (
+        "Standing Quad Stretch",
+        "mobility",
+        "Stand on one leg, grab opposite ankle behind you, pull heel toward glute. Keep knees together. 20 s each side.",
+        1, 40, "quadriceps, hip flexors",
+        2.0,
+        "Counters shortened quads/hip flexors from prolonged sitting. Hold a wall/desk for balance."
+    ),
+    (
+        "Wrist & Finger Stretches",
+        "mobility",
+        "Extend one arm forward, palm up. Gently pull fingers back with other hand. Then palm down, pull fingers toward you. Switch.",
+        1, 30, "forearm flexors, extensors, wrist joint",
+        1.0,
+        "Essential for heavy keyboard/mouse users. Prevents repetitive strain injury."
+    ),
+    (
+        "Ankle Rotations",
+        "mobility",
+        "Sit or stand, lift one foot. Rotate ankle 5 times clockwise, 5 counter-clockwise. Switch feet.",
+        1, 25, "ankle joint, calves, tibialis anterior",
+        1.0,
+        "Maintains ankle mobility. Quick, can do while seated in meetings."
+    ),
+    (
+        "Child's Pose",
+        "mobility",
+        "Kneel, sit back on heels, fold forward, arms extended or at sides. Forehead on floor/desk. Breathe deeply.",
+        1, 35, "spine, shoulders, hips, lower back",
+        1.5,
+        "Restorative yoga pose. Decompresses spine, stretches lats and shoulders."
+    ),
+    (
+        "Doorway Chest Stretch",
+        "mobility",
+        "Stand in doorway, forearms on frame at shoulder height. Lean forward gently until stretch felt across chest. Hold 20 s.",
+        1, 30, "pectoralis major, anterior deltoids",
+        1.5,
+        "Counters internally-rotated shoulders from desk/phone posture. Opens chest for better breathing."
+    ),
+    (
+        "Standing Side Bend",
+        "mobility",
+        "Stand, one arm overhead, bend torso to opposite side. Slide other hand down leg. Hold, switch sides.",
+        1, 30, "obliques, latissimus dorsi, quadratus lumborum",
+        2.0,
+        "Lateral flexion stretch. Opens up ribcage for deeper breathing."
+    ),
+]
+
+
+def build_db(db_path: Path) -> int:
+    """Create schema and populate exercises. Returns number of exercises inserted."""
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(str(db_path))
+    conn.execute("PRAGMA journal_mode=WAL")
+    conn.execute("PRAGMA foreign_keys=ON")
+    conn.executescript(SCHEMA)
+
+    # Delete existing exercises so this script is idempotent
+    conn.execute("DELETE FROM exercises")
+
+    conn.executemany(
+        """INSERT INTO exercises
+           (name, category, description, intensity, duration_sec,
+            muscle_groups, calories_per_min_approx, source_notes)
+           VALUES (?,?,?,?,?,?,?,?)""",
+        EXERCISES,
+    )
+    conn.commit()
+    count = conn.execute("SELECT COUNT(*) FROM exercises").fetchone()[0]
+    conn.close()
+    return count
+
+
+def main():
+    if "--help" in sys.argv or "-h" in sys.argv:
+        print(__doc__)
+        print(f"Database path: {DB_PATH}")
+        return
+    count = build_db(DB_PATH)
+    print(f"Database built: {count} exercises written to {DB_PATH}")
+
+
+if __name__ == "__main__":
+    main()

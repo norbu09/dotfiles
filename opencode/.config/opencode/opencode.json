@@ -5,6 +5,11 @@
       "type": "remote",
       "url": "http://localhost:4000/tidewave/mcp",
       "enabled": true
+    },
+    "worth-memory": {
+      "type": "remote",
+      "url": "http://localhost:4001/mcp",
+      "enabled": true
     }
   }
 }

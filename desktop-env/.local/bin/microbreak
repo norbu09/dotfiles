@@ -1,0 +1,569 @@
+#!/usr/bin/env python3
+"""Micro Break v2 — research-backed micro-exercise daemon with SQLite tracking and feedback.
+
+Enhancements over v1:
+  - SQLite database with 46 research-backed exercises across 5 categories
+  - Smart exercise rotation (avoids repeats, balances categories, adjusts to time-of-day)
+  - Personal feedback: rate difficulty (1-5) and effectiveness (1-5) after each exercise
+  - Feedback-driven personalization (deprioritizes consistently low-rated exercises)
+  - Detailed stats with category breakdown and personal trends
+"""
+
+import ctypes
+import random
+import signal
+import struct
+import sqlite3
+import warnings
+from datetime import datetime, date, timedelta
+from pathlib import Path
+
+# StatusIcon is deprecated in GTK3 but functional — suppress
+warnings.filterwarnings("ignore", ".*StatusIcon.*", DeprecationWarning)
+
+import gi
+gi.require_version("Gtk", "3.0")
+gi.require_version("Notify", "0.7")
+from gi.repository import GLib, Gtk, Notify
+
+# ── Constants ─────────────────────────────────────────────────────────────
+
+DEFAULT_INTERVAL = 10        # minutes between reminders
+DEFAULT_GRACE = 2            # minutes before auto-miss
+IDLE_THRESHOLD_MS = 600_000  # skip if idle > 10 min (away/sleeping)
+
+DB_PATH = Path.home() / ".local/share/microbreak/microbreak.db"
+
+ICON_ACTIVE = "emblem-important"
+ICON_IDLE = "go-jump"
+ICON_PAUSED = "media-playback-pause"
+
+# Category ordering for rotation (cardio and mobility bookend the day)
+CATEGORIES = ["mobility", "strength_upper", "strength_lower", "core", "cardio"]
+
+# Time-of-day category weights: hour → {category: weight}
+TIME_WEIGHTS = {
+    # Early morning (5-10): gentle start — mobility + light cardio
+    "early": {"mobility": 3, "cardio": 2, "strength_lower": 1, "core": 1, "strength_upper": 0},
+    # Core day (10-16): balanced strength focus
+    "core": {"strength_upper": 2, "strength_lower": 2, "core": 2, "cardio": 1, "mobility": 1},
+    # Late afternoon (16-19): energy peak — cardio + strength
+    "afternoon": {"cardio": 3, "strength_lower": 2, "strength_upper": 2, "core": 1, "mobility": 1},
+    # Evening (19-24): wind down — mobility + core
+    "evening": {"mobility": 3, "core": 2, "strength_upper": 1, "strength_lower": 1, "cardio": 0},
+}
+
+# ── X11 idle detection ────────────────────────────────────────────────────
+
+def get_idle_ms() -> int:
+    """Return X11 idle time in milliseconds via XScreenSaver (ctypes). 0 if unavailable."""
+    libX11 = ctypes.cdll.LoadLibrary("libX11.so.6")
+    libXss = ctypes.cdll.LoadLibrary("libXss.so.1")
+
+    libX11.XOpenDisplay.restype = ctypes.c_void_p
+    libX11.XOpenDisplay.argtypes = [ctypes.c_char_p]
+    libX11.XDefaultRootWindow.restype = ctypes.c_ulong
+    libX11.XDefaultRootWindow.argtypes = [ctypes.c_void_p]
+    libX11.XFree.restype = ctypes.c_int
+    libX11.XFree.argtypes = [ctypes.c_void_p]
+    libX11.XCloseDisplay.restype = None
+    libX11.XCloseDisplay.argtypes = [ctypes.c_void_p]
+
+    libXss.XScreenSaverQueryExtension.restype = ctypes.c_int
+    libXss.XScreenSaverQueryExtension.argtypes = [
+        ctypes.c_void_p, ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int),
+    ]
+    libXss.XScreenSaverAllocInfo.restype = ctypes.c_void_p
+    libXss.XScreenSaverQueryInfo.restype = None
+    libXss.XScreenSaverQueryInfo.argtypes = [
+        ctypes.c_void_p, ctypes.c_ulong, ctypes.c_void_p,
+    ]
+
+    display = libX11.XOpenDisplay(None)
+    if not display:
+        return 0
+
+    event_base = ctypes.c_int()
+    error_base = ctypes.c_int()
+    if not libXss.XScreenSaverQueryExtension(display, ctypes.byref(event_base), ctypes.byref(error_base)):
+        libX11.XCloseDisplay(display)
+        return 0
+
+    info_ptr = libXss.XScreenSaverAllocInfo()
+    root = libX11.XDefaultRootWindow(display)
+    libXss.XScreenSaverQueryInfo(display, root, info_ptr)
+
+    buf = (ctypes.c_char * 8).from_address(info_ptr + 24)
+    idle = struct.unpack("Q", buf.raw)[0]
+
+    libX11.XFree(info_ptr)
+    libX11.XCloseDisplay(display)
+    return int(idle)
+
+
+# ── Database helpers ──────────────────────────────────────────────────────
+
+def _db_connect():
+    conn = sqlite3.connect(str(DB_PATH))
+    conn.execute("PRAGMA journal_mode=WAL")
+    conn.execute("PRAGMA foreign_keys=ON")
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+# ── Feedback dialog ───────────────────────────────────────────────────────
+
+class FeedbackDialog:
+    """A small GTK dialog shown after completing an exercise to collect ratings."""
+
+    def __init__(self, parent_icon, session_id: int, exercise_name: str, on_done):
+        self._session_id = session_id
+        self._on_done = on_done
+
+        self._dialog = Gtk.Dialog(
+            title="Rate Your Exercise",
+            transient_for=None,
+            flags=Gtk.DialogFlags.MODAL,
+        )
+        self._dialog.set_position(Gtk.WindowPosition.CENTER)
+        self._dialog.set_default_size(380, -1)
+
+        # --- content area ---
+        content = self._dialog.get_content_area()
+        content.set_spacing(10)
+        content.set_margin_start(16)
+        content.set_margin_end(16)
+        content.set_margin_top(16)
+        content.set_margin_bottom(16)
+
+        # Exercise name
+        label = Gtk.Label()
+        label.set_markup(f"<b>{GLib.markup_escape_text(exercise_name)}</b>")
+        label.set_halign(Gtk.Align.START)
+        content.pack_start(label, False, False, 0)
+
+        # Difficulty rating
+        diff_label = Gtk.Label(label="How hard was it?")
+        diff_label.set_halign(Gtk.Align.START)
+        content.pack_start(diff_label, False, False, 4)
+
+        self._difficulty = Gtk.Scale.new_with_range(Gtk.Orientation.HORIZONTAL, 1, 5, 1)
+        self._difficulty.set_value(3)
+        self._difficulty.set_digits(0)
+        self._difficulty.set_has_origin(False)
+        self._difficulty.add_mark(1, Gtk.PositionType.BOTTOM, "Easy")
+        self._difficulty.add_mark(5, Gtk.PositionType.BOTTOM, "Hard")
+        content.pack_start(self._difficulty, False, False, 0)
+
+        # Effectiveness rating
+        eff_label = Gtk.Label(label="How effective did it feel?")
+        eff_label.set_halign(Gtk.Align.START)
+        content.pack_start(eff_label, False, False, 4)
+
+        self._effectiveness = Gtk.Scale.new_with_range(Gtk.Orientation.HORIZONTAL, 1, 5, 1)
+        self._effectiveness.set_value(3)
+        self._effectiveness.set_digits(0)
+        self._effectiveness.set_has_origin(False)
+        self._effectiveness.add_mark(1, Gtk.PositionType.BOTTOM, "Meh")
+        self._effectiveness.add_mark(5, Gtk.PositionType.BOTTOM, "Great")
+        content.pack_start(self._effectiveness, False, False, 0)
+
+        # Notes entry
+        notes_label = Gtk.Label(label="Notes (optional):")
+        notes_label.set_halign(Gtk.Align.START)
+        content.pack_start(notes_label, False, False, 4)
+
+        self._notes = Gtk.Entry()
+        self._notes.set_placeholder_text("e.g., felt it in my glutes…")
+        content.pack_start(self._notes, False, False, 0)
+
+        # --- action buttons ---
+        self._dialog.add_button("Skip Rating", Gtk.ResponseType.CANCEL)
+        save_btn = self._dialog.add_button("Save", Gtk.ResponseType.OK)
+        save_btn.get_style_context().add_class("suggested-action")
+
+        self._dialog.connect("response", self._on_response)
+        self._dialog.show_all()
+
+    def _on_response(self, _dialog, response_id):
+        if response_id == Gtk.ResponseType.OK:
+            diff = int(self._difficulty.get_value())
+            eff = int(self._effectiveness.get_value())
+            notes = self._notes.get_text().strip() or None
+            _save_feedback(self._session_id, diff, eff, notes)
+
+        self._dialog.destroy()
+        self._on_done()
+
+
+def _save_feedback(session_id: int, difficulty: int, effectiveness: int, notes: str | None):
+    conn = _db_connect()
+    conn.execute(
+        """INSERT OR REPLACE INTO feedback (session_id, difficulty_rating, effectiveness_rating, notes)
+           VALUES (?, ?, ?, ?)""",
+        (session_id, difficulty, effectiveness, notes),
+    )
+    conn.commit()
+    conn.close()
+
+
+# ── Main app ──────────────────────────────────────────────────────────────
+
+class MicroBreak:
+    def __init__(self, interval_min=DEFAULT_INTERVAL, grace_min=DEFAULT_GRACE):
+        self.interval_ms = interval_min * 60 * 1000
+        self.grace_ms = grace_min * 60 * 1000
+        self.reminder_active = False
+        self.grace_timer_id = None
+        self.reminder_timer_id = None
+        self.reminder_time = None
+        self._current_exercise: sqlite3.Row | None = None
+        self._current_session_id: int | None = None
+        self.paused = False
+
+        Notify.init("MicroBreak")
+
+        # --- tray icon ---
+        self.icon = Gtk.StatusIcon()
+        self.icon.set_from_icon_name(ICON_IDLE)
+        self.icon.set_tooltip_text("Micro Break — waiting…")
+        self.icon.connect("activate", self._on_left_click)
+        self.icon.connect("popup-menu", self._on_right_click)
+
+        self._start_reminder_timer()
+
+    # ── Exercise selection ────────────────────────────────────────────
+
+    def _pick_exercise(self) -> sqlite3.Row:
+        """Select an exercise using smart rotation: time-aware weighted random,
+        avoids recent repeats, and deprioritizes consistently low-rated exercises."""
+        conn = _db_connect()
+
+        # Recent exercise IDs (last 3 hours) to avoid repeats
+        cutoff = (datetime.now() - timedelta(hours=3)).strftime("%H:%M")
+        today = date.today().isoformat()
+        recent_ids = [
+            row[0] for row in conn.execute(
+                """SELECT exercise_id FROM sessions
+                   WHERE date = ? AND time > ? AND status = 'done'
+                   ORDER BY time DESC LIMIT 20""",
+                (today, cutoff),
+            ).fetchall()
+        ]
+
+        # Low-effectiveness exercises (avg < 2.5 over last 10 ratings) to deprioritize
+        low_rated_ids = [
+            row[0] for row in conn.execute(
+                """SELECT e.id FROM exercises e
+                   JOIN sessions s ON s.exercise_id = e.id
+                   JOIN feedback f ON f.session_id = s.id
+                   WHERE f.effectiveness_rating IS NOT NULL
+                   GROUP BY e.id
+                   HAVING AVG(f.effectiveness_rating) < 2.5
+                      AND COUNT(f.id) >= 3"""
+            ).fetchall()
+        ]
+
+        # Time-of-day weights
+        hour = datetime.now().hour
+        if hour < 10:
+            slot = "early"
+        elif hour < 16:
+            slot = "core"
+        elif hour < 19:
+            slot = "afternoon"
+        else:
+            slot = "evening"
+
+        weights = TIME_WEIGHTS[slot]
+
+        # Build weighted pool
+        pool: list[tuple[sqlite3.Row, float]] = []
+        all_exercises = conn.execute("SELECT * FROM exercises").fetchall()
+        conn.close()
+
+        for ex in all_exercises:
+            w = weights.get(ex["category"], 1)
+            if w == 0:
+                continue
+            # Penalty for recently done
+            if ex["id"] in recent_ids:
+                w *= 0.15
+            # Penalty for consistently low-rated
+            if ex["id"] in low_rated_ids:
+                w *= 0.2
+            if w > 0:
+                pool.append((ex, w))
+
+        # Fallback: if pool is empty (all penalized to 0), pick any exercise
+        if not pool:
+            return random.choice(all_exercises)
+
+        # Weighted random choice
+        exercises, weights_list = zip(*pool)
+        total = sum(weights_list)
+        r = random.uniform(0, total)
+        cumulative = 0
+        for ex, w in zip(exercises, weights_list):
+            cumulative += w
+            if r <= cumulative:
+                return ex
+        return exercises[-1]
+
+    # ── Timers ────────────────────────────────────────────────────────
+
+    def _start_reminder_timer(self):
+        if self.reminder_timer_id:
+            GLib.source_remove(self.reminder_timer_id)
+        self.reminder_timer_id = GLib.timeout_add(self.interval_ms, self._fire_reminder)
+
+    def _cancel_reminder_timer(self):
+        if self.reminder_timer_id:
+            GLib.source_remove(self.reminder_timer_id)
+            self.reminder_timer_id = None
+
+    def _start_grace_timer(self):
+        if self.grace_timer_id:
+            GLib.source_remove(self.grace_timer_id)
+        self.grace_timer_id = GLib.timeout_add(self.grace_ms, self._auto_miss)
+
+    def _cancel_grace_timer(self):
+        if self.grace_timer_id:
+            GLib.source_remove(self.grace_timer_id)
+            self.grace_timer_id = None
+
+    # ── Reminder flow ─────────────────────────────────────────────────
+
+    def _fire_reminder(self):
+        if self.paused:
+            self._start_reminder_timer()
+            return False
+
+        if get_idle_ms() > IDLE_THRESHOLD_MS:
+            self._start_reminder_timer()
+            return False
+
+        self.reminder_active = True
+        self.reminder_time = datetime.now()
+        self._current_exercise = self._pick_exercise()
+
+        self.icon.set_from_icon_name(ICON_ACTIVE)
+        tip = f"{self._current_exercise['name']} ({self._current_exercise['category']})"
+        self.icon.set_tooltip_text(f"Micro Break — {tip}")
+
+        # Build notification body
+        desc = self._current_exercise["description"]
+        intensity_stars = "★" * self._current_exercise["intensity"] + "☆" * (5 - self._current_exercise["intensity"])
+        body = f"{desc}\n\nIntensity: {intensity_stars}  ·  ~{self._current_exercise['duration_sec']} s\nRight-click tray → Done! / Skip"
+
+        n = Notify.Notification.new("Micro Exercise Break", body, ICON_ACTIVE)
+        n.set_timeout(Notify.EXPIRES_NEVER)
+        n.show()
+
+        self._start_grace_timer()
+        return False
+
+    def _resolve_reminder(self, status: str):
+        """status: 'done' | 'missed' | 'skipped'"""
+        if not self.reminder_active:
+            return
+
+        self._cancel_grace_timer()
+        self.reminder_active = False
+
+        today = date.today().isoformat()
+        ts = self.reminder_time.strftime("%H:%M") if self.reminder_time else datetime.now().strftime("%H:%M")
+
+        conn = _db_connect()
+        cursor = conn.execute(
+            "INSERT INTO sessions (date, time, exercise_id, status) VALUES (?, ?, ?, ?)",
+            (today, ts, self._current_exercise["id"], status),
+        )
+        session_id = cursor.lastrowid
+        conn.commit()
+        conn.close()
+
+        self.icon.set_from_icon_name(ICON_IDLE)
+        self.icon.set_tooltip_text("Micro Break — waiting…")
+        Notify.Notification.new("", "", "").close()
+
+        # If done, show feedback dialog
+        if status == "done" and session_id:
+            self._current_session_id = session_id
+            FeedbackDialog(
+                self.icon, session_id, self._current_exercise["name"],
+                on_done=lambda: None,
+            )
+
+        self._current_exercise = None
+        self._current_session_id = None
+        self._start_reminder_timer()
+
+    def _auto_miss(self):
+        self._resolve_reminder("missed")
+        n = Notify.Notification.new(
+            "Micro Break — missed",
+            "You missed the last break. Next one in a bit!",
+            ICON_IDLE,
+        )
+        n.show()
+        return False
+
+    # ── Pause / Resume ────────────────────────────────────────────────
+
+    def _toggle_pause(self):
+        self.paused = not self.paused
+        if self.paused:
+            self._cancel_reminder_timer()
+            self._cancel_grace_timer()
+            self.reminder_active = False
+            Notify.Notification.new("", "", "").close()
+            self.icon.set_from_icon_name(ICON_PAUSED)
+            self.icon.set_tooltip_text("Micro Break — paused (click to resume)")
+        else:
+            self.icon.set_from_icon_name(ICON_IDLE)
+            self.icon.set_tooltip_text("Micro Break — waiting…")
+            self._start_reminder_timer()
+
+    # ── Tray interactions ─────────────────────────────────────────────
+
+    def _on_left_click(self, _icon):
+        if self.paused:
+            self._toggle_pause()
+        elif self.reminder_active:
+            self._resolve_reminder("done")
+
+    def _on_right_click(self, _icon, button, activate_time):
+        menu = Gtk.Menu()
+
+        if self.reminder_active:
+            done = Gtk.MenuItem(label="Done!")
+            done.connect("activate", lambda *_: self._resolve_reminder("done"))
+            menu.append(done)
+
+            skip = Gtk.MenuItem(label="Skip")
+            skip.connect("activate", lambda *_: self._resolve_reminder("skipped"))
+            menu.append(skip)
+
+            menu.append(Gtk.SeparatorMenuItem())
+
+        stats = Gtk.MenuItem(label="Today's Stats")
+        stats.connect("activate", lambda *_: self._show_stats())
+        menu.append(stats)
+
+        menu.append(Gtk.SeparatorMenuItem())
+
+        pause_label = "Resume" if self.paused else "Pause"
+        pause_item = Gtk.MenuItem(label=pause_label)
+        pause_item.connect("activate", lambda *_: self._toggle_pause())
+        menu.append(pause_item)
+
+        menu.append(Gtk.SeparatorMenuItem())
+
+        quit_item = Gtk.MenuItem(label="Quit")
+        quit_item.connect("activate", lambda *_: self._quit())
+        menu.append(quit_item)
+
+        menu.show_all()
+        menu.popup(None, None, Gtk.StatusIcon.position_menu, self.icon, button, activate_time)
+
+    # ── Stats ─────────────────────────────────────────────────────────
+
+    def _show_stats(self):
+        today = date.today().isoformat()
+        conn = _db_connect()
+
+        # Session counts
+        done = conn.execute(
+            "SELECT COUNT(*) FROM sessions WHERE date=? AND status='done'", (today,)
+        ).fetchone()[0]
+        missed = conn.execute(
+            "SELECT COUNT(*) FROM sessions WHERE date=? AND status='missed'", (today,)
+        ).fetchone()[0]
+        skipped = conn.execute(
+            "SELECT COUNT(*) FROM sessions WHERE date=? AND status='skipped'", (today,)
+        ).fetchone()[0]
+
+        # Category breakdown for done exercises
+        cat_rows = conn.execute(
+            """SELECT e.category, COUNT(*) FROM sessions s
+               JOIN exercises e ON e.id = s.exercise_id
+               WHERE s.date=? AND s.status='done'
+               GROUP BY e.category ORDER BY COUNT(*) DESC""",
+            (today,),
+        ).fetchall()
+        cat_parts = "  ".join(f"{r[0]}: {r[1]}" for r in cat_rows) if cat_rows else "no exercises done yet"
+
+        # Streak: consecutive days with ≥1 done AND 0 missed (including today)
+        streak = 0
+        d = date.today()
+        while True:
+            key = d.isoformat()
+            day_done = conn.execute(
+                "SELECT COUNT(*) FROM sessions WHERE date=? AND status='done'", (key,)
+            ).fetchone()[0]
+            day_missed = conn.execute(
+                "SELECT COUNT(*) FROM sessions WHERE date=? AND status='missed'", (key,)
+            ).fetchone()[0]
+            if day_done > 0 and day_missed == 0:
+                streak += 1
+                d = d.fromordinal(d.toordinal() - 1)
+            else:
+                break
+
+        # Average ratings
+        avg_row = conn.execute(
+            """SELECT AVG(f.difficulty_rating), AVG(f.effectiveness_rating)
+               FROM feedback f
+               JOIN sessions s ON s.id = f.session_id
+               WHERE s.date = ?""",
+            (today,),
+        ).fetchone()
+        avg_diff = f"{avg_row[0]:.1f}" if avg_row[0] else "—"
+        avg_eff = f"{avg_row[1]:.1f}" if avg_row[1] else "—"
+
+        conn.close()
+
+        text = (
+            f"Today: {done} done, {missed} missed, {skipped} skipped\n"
+            f"Categories: {cat_parts}\n"
+            f"Ratings: difficulty {avg_diff}/5  ·  effectiveness {avg_eff}/5\n"
+            f"Streak: {streak} day{'s' if streak != 1 else ''} without a miss"
+        )
+
+        Notify.Notification.new("Micro Break Stats", text, "emblem-default").show()
+
+    # ── Lifecycle ─────────────────────────────────────────────────────
+
+    def _quit(self):
+        self._cancel_grace_timer()
+        if self.reminder_timer_id:
+            GLib.source_remove(self.reminder_timer_id)
+        Notify.uninit()
+        Gtk.main_quit()
+
+    def run(self):
+        Gtk.main()
+
+
+# ── CLI ───────────────────────────────────────────────────────────────────
+
+def parse_args():
+    import argparse
+    p = argparse.ArgumentParser(description="Micro Break v2 — smart micro-exercise daemon")
+    p.add_argument("--interval", type=int, default=DEFAULT_INTERVAL,
+                   help=f"Minutes between reminders (default: {DEFAULT_INTERVAL})")
+    p.add_argument("--grace", type=int, default=DEFAULT_GRACE,
+                   help=f"Minutes before auto-miss (default: {DEFAULT_GRACE})")
+    return p.parse_args()
+
+
+def main():
+    signal.signal(signal.SIGINT, lambda *_: Gtk.main_quit())
+    args = parse_args()
+    app = MicroBreak(interval_min=args.interval, grace_min=args.grace)
+    app.run()
+
+
+if __name__ == "__main__":
+    main()
