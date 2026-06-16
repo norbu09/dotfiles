@@ -10,7 +10,7 @@ sudo pacman -S --needed \
   i3-wm kitty polybar picom feh fish btop rofi dunst \
   redshift playerctl scrot maim xclip pamixer xob \
   polkit-gnome dex stow zen-browser-bin \
-  ttf-meslo-nerd
+  ttf-meslo-nerd obsidian mergiraf
 ```
 
 ### Debian / Ubuntu
@@ -69,10 +69,12 @@ cd ~/.dotfiles
 | `applications` | Custom desktop entries (brain, Claude Code URL handler, Worth) |
 | `volumeicon` | System tray volume control with alsamixer |
 | `newsboat` | RSS feed reader with Catppuccin Mocha theme |
+| `obsidian` | Note-taking app (autostarted, keybound to Mod+o) |
 
 ## Dependencies
 
 - **asdf** — version manager for Elixir, Erlang, Node.js (see `bin/setup-asdf.sh`)
+- **mergiraf** — syntax-aware Git merge driver (already configured in `.gitconfig`)
 - `.tool-versions` at `$HOME` pins exact versions
 
 ## Keybindings
@@ -84,6 +86,7 @@ cd ~/.dotfiles
 | `Mod+Tab` | Window switcher (rofi) |
 | `Mod+b` | Btop (system monitor) |
 | `Mod+w` | Zen Browser |
+| `Mod+o` | Obsidian |
 | `Mod+g` | GitUI |
 | `Mod+l` | Lock screen |
 | `F1` | Keybinding cheat sheet |

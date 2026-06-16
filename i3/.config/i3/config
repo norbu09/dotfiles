@@ -111,6 +111,7 @@ bindsym F1 exec ~/.config/i3/scripts/keyhint-2
 
 # quick launch
 bindsym $mod+w exec zen-browser
+bindsym $mod+o exec obsidian
 bindsym $mod+Tab exec rofi -show window
 bindsym $mod+Shift+n exec ~/.config/i3/scripts/empty_workspace
 

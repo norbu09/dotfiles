@@ -42,7 +42,7 @@ if [ "$PM" = "pacman" ]; then
         pipewire wireplumber pipewire-pulse pipewire-alsa \
         bluez bluez-utils \
         noto-fonts noto-fonts-emoji noto-fonts-cjk \
-        xdg-user-dirs pavucontrol
+        xdg-user-dirs pavucontrol obsidian mergiraf
 
     if [ -n "$AUR_INSTALL" ]; then
         $AUR_INSTALL i3lock-color asdf-vm 2>/dev/null || true
@@ -57,6 +57,8 @@ elif [ "$PM" = "apt" ]; then
         htop neovim thunar newsboat kdeconnect iw geoclue-2.0
     echo "Note: Install Meslo Nerd Font manually from https://github.com/ryanoasis/nerd-fonts/releases"
     echo "Note: Install asdf from https://asdf-vm.com/guide/getting-started.html"
+    echo "Note: Install Obsidian manually from https://obsidian.md/download"
+    echo "Note: Install mergiraf from https://mergiraf.org/ or via cargo"
 elif [ "$PM" = "dnf" ]; then
     $INSTALL_CMD \
         i3 kitty polybar picom feh fish btop rofi dunst \
@@ -65,6 +67,8 @@ elif [ "$PM" = "dnf" ]; then
         meslo-nerd-fonts starship lightdm lightdm-gtk-greeter \
         autorandr alacritty htop neovim thunar cava newsboat kdeconnect iw geoclue2
     echo "Note: Install asdf from https://asdf-vm.com/guide/getting-started.html"
+    echo "Note: Install Obsidian manually from https://obsidian.md/download"
+    echo "Note: Install mergiraf from https://mergiraf.org/ or via cargo"
 fi
 
 # Install asdf via git for non-Arch systems (config.fish auto-detects)
